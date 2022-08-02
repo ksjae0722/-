@@ -1,0 +1,20 @@
+package mvc.model;
+
+public class MemberDTO {
+int s_id;
+String s_name;
+String s_regNumber1;
+String s_regNumber2;
+String s_passwd;
+String s_college;
+String d_name;
+float s_score;
+String s_state;
+int s_grade;
+String s_address;
+String s_pNumber;
+String s_email;
+String s_account1;
+String s_account2;
+String s_account3;
+}

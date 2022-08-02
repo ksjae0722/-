@@ -1,0 +1,23 @@
+package mvc.model;
+
+import java.util.ArrayList;
+
+public class MemberDAO
+{
+	private ArrayList<StudentDTO> student = new ArrayList<StudentDTO>();
+	ArrayList<PersonalDTO> personal = new ArrayList<PersonalDTO>();
+	
+	private static MemberDAO instance;
+	
+	private MemberDAO() {
+		
+	}
+
+	public static MemberDAO getInstance() {
+		if (instance == null)
+			instance = new MemberDAO();
+		return instance;
+	}
+	
+	
+}

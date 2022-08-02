@@ -1,0 +1,166 @@
+@charset "UTF-8";
+
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Noto-Sans KR', sans-serif;
+    list-style: none;
+    text-decoration: none;
+}
+
+:root
+    {
+    /*color*/
+    --color-white : white;
+    --color-black : #212B36;
+    --color-blue : #009AE9;
+    --color-grey : #637181;
+    --color-red : #E75555;
+    --color-green : #229915;
+    
+    /*font size*/
+    --font-large: 24px;
+    --font-medium: 20px;
+    --font-regular: 16px;
+    --font-small: 14px;
+    --font-micro: 13px;
+
+    /*font weight*/
+    --weight-bold: 700;
+    --weight-semi-bold: 600;
+    --weight-regular: 400;
+    --weight-small: 200;
+    }
+
+/*회원가입 페이지 시작*/
+
+.join_container{
+    width: 1020px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.join_container > .join_section1 > .logo{
+    width: 280px;
+    height: 180px;
+    margin: 100px auto 0;
+}
+
+.join_container > .join_section1 >.logo > img{
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.join_container > .join_section2{
+    display: flex;
+    justify-content: center;
+}
+
+.join_container > .join_section2 > .left{
+    text-align: left;
+    margin-right: 20px; 
+}
+
+.join_container > .join_section2 > .left > ul > li{
+    width: 140px;
+    height: 50px;
+    margin-bottom: 8px;
+    background-color: #606060; 
+    line-height: 50px;
+    border-radius: 6px;
+    text-align: center;
+    color: white;
+}
+
+.join_container > .join_section2 > .middle{
+    margin-right: 10px;
+}
+
+.join_container > .join_section2 > .middle > ul > form > li{
+    margin-bottom: 8px;
+    font-size: var(--font-large);
+}
+
+.join_container > .join_section2 > .middle > ul > form > div{
+    text-align: left;
+    margin-bottom: 20px;
+    margin-left: 20px;
+    color: blue;
+}
+
+.join_container > .join_section2 > .middle > ul > form > li > .box{
+    width: 340px;
+    height: 50px;
+    border-radius: 6px;
+    border:1px solid #2b489c;
+    padding: 0 20px;
+    line-height: 50px;
+    font-size: 18px;
+    
+}
+
+.join_container > .join_section2 > .middle > ul > form > li > .number{
+    background-color: rgba(145, 158, 171, 0.12);
+    cursor: default;
+}
+
+.join_container > .join_section2 > .middle > ul > form > li > .box::placeholder{
+    color: #6c757d;
+    font-size: 18px;
+    font-family: 'Noto-Sans KR', sans-serif;
+    font-weight: 400;
+    
+    
+}
+
+.join_container > .join_section2 > .middle > ul > form > li > .sub{
+    width: 340px;
+    height: 80px;
+    background-color: #2b489c;
+    color: white;
+    display: inline-block;
+    border-radius: 6px;
+    line-height: 80px;
+    margin-bottom: 125px;
+    font-weight: 700;
+    font-size : 24px;
+    border-color :  #2b489c;
+    
+}
+
+.join_container > .join_section2 > .right > a{
+    display: inline-block;
+    width: 136px;
+    height: 108px;
+    background-color: #2b489c;
+    border-radius: 6px;
+    text-align: center;
+    line-height: 108px;
+    color: white;
+    font-size: 25px;
+    font-weight: 700;
+}
+
+.join_container > .join_section3{
+    text-align: left;
+    
+}
+
+.join_container > .join_section3 > .notice{
+    background-color: #EBEFFA;
+    border-radius: 6px;
+    color: #333333;
+    padding: 50px 30px;
+}
+
+.join_container > .join_section3 > .notice > .a{
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #2956a6;
+}
+
+.join_container > .join_section3 > .notice > .a >i{
+    margin-right: 10px;
+}

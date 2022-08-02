@@ -1,0 +1,42 @@
+package mvc.controller;
+
+import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public class MemberController  extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doPost(request, response);
+	}
+	
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		//커맨드 패턴의 .do만을 추출하기 위하여 문자열 전처리
+		String RequestURI = request.getRequestURI(); 
+		String contextPath = request.getContextPath();
+		String command = RequestURI.substring(contextPath.length());
+		System.out.println(command);
+		
+		//글자 깨지지않기 위해
+		response.setContentType("text/html; charset=utf-8");
+		request.setCharacterEncoding("utf-8");
+		
+		//1. 회원가입
+		if(command.equals("/member/join.do")) {
+			System.out.println("컨트롤러 동작확인");
+			RequestDispatcher rd = request.getRequestDispatcher("./join.jsp");
+			rd.forward(request, response);
+		}
+	}
+	
+	public void processaction(HttpServletRequest request) {
+		
+	}
+
+}

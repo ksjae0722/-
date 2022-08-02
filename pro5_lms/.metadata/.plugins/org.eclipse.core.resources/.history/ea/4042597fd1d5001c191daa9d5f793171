@@ -1,0 +1,83 @@
+package mvc.model;
+
+import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import mvc.database.DBConn;
+
+public class MemberDAO
+{
+	private ArrayList<StudentDTO> student = new ArrayList<StudentDTO>();
+	ArrayList<PersonalDTO> personal = new ArrayList<PersonalDTO>();
+	
+	private static MemberDAO instance;
+	
+	private MemberDAO() {}
+
+	public static MemberDAO getInstance() {
+		if (instance == null)
+			instance = new MemberDAO();
+		return instance;
+	}
+	
+	//주민등록번호로 이름과 아이디를 찾음
+	public String[] get_NameId(String jumin1, String jumin2) {
+		//DB연결하기 위해 변수생성
+		Connection conn = null; 
+		PreparedStatement pstmt = null;
+		PreparedStatement pstmt2 = null;
+		ResultSet rs = null;
+		ResultSet rs2 = null;
+		String[] nameId = {null, null};
+		
+		String sql;
+		
+		
+		try {
+			//DB생성
+			sql = "select s_name, s_id from student where s_regNumber1=? and s_regNumber2=?";
+			conn = DBConn.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, jumin1);
+			pstmt.setString(2, jumin2);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				nameId[0] = rs.getString("s_id");
+				nameId[1] = rs.getString("s_name");
+			}
+			else {
+				sql = "select p_name, p_id from personal where p_regNumber1=? and p_regNumber2=?";
+				pstmt2 = conn.prepareStatement(sql);
+				pstmt2.setString(1, jumin1);
+				pstmt2.setString(2, jumin2);
+				rs2 = pstmt2.executeQuery();
+				
+				if(rs2.next()) {
+					nameId[0] = rs2.getString("p_id");
+					nameId[1] = rs2.getString("p_name");
+				}
+			}
+		} catch (Exception ex) {
+			System.out.println("getBoardList() 에러 : " + ex);
+		} finally {
+			try { // null 
+				if (rs != null) 
+					rs.close();
+				if (rs2 != null) 
+					rs2.close();	
+				if (pstmt != null) 
+					pstmt.close();	
+				if (pstmt2 != null) 
+					pstmt2.close();
+				if (conn != null) 
+					conn.close();
+			} catch (Exception ex) {
+				throw new RuntimeException(ex.getMessage());
+			}			
+		}
+		return nameId;
+	}
+}

@@ -1,0 +1,16 @@
+package mvc.model;
+
+public class PersonalDTO
+{
+	String p_id;
+	String p_name;
+	String p_regNumber1;
+	String p_regNumber2;
+	String p_passwd;
+	String p_college;
+	String p_department;
+	String p_major;
+	String p_office;
+	String p_oNumber;
+	String p_email;
+}

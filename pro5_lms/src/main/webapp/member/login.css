@@ -1,0 +1,146 @@
+@charset "UTF-8";
+
+:root
+{
+/*color*/
+--color-white : white;
+--color-black : #212B36;
+--color-blue : #009AE9;
+--color-grey : #637181;
+--color-red : #E75555;
+--color-green : #229915;
+/*font size*/
+--font-large: 24px;
+--font-medium: 20px;
+--font-regular: 16px;
+--font-small: 14px;
+--font-micro: 13px;
+
+/*font weight*/
+--weight-bold: 700;
+--weight-semi-bold: 600;
+--weight-regular: 400;
+--weight-small: 200;
+}
+
+*
+{
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: 'Noto Sans KR', sans-serif;
+list-style: none;
+text-decoration: none;
+}
+.section{
+    margin: 0;
+    background-color: #ebeffa;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+}
+.section > .container{ 
+    margin: 0 auto;
+    width: 1000px;
+    background-color: white;
+    display: flex;
+    height: 600px;
+    border-radius: 10px;
+}
+/*왼쪽*/
+.section > .container > .left-box{
+    margin: 0;
+    padding: 30px;
+    width: 560px;
+}
+.section > .container > .left-box > .banner{
+    margin: 0;
+    height: 100%;
+    border-radius: 4px;
+}
+/*오른쪽*/
+.section > .container > .right-box{
+    margin: 0;
+    padding: 0;
+    width: 440px;
+}
+.section > .container > .right-box > .service{
+    margin: 40px 70px;
+    padding: 0;
+}
+.section > .container > .right-box > .service > .image{
+    padding: 0;
+}
+.section > .container > .right-box > .service > .image > .logo{
+    margin: 0 auto;
+    width: 260px;
+    height: auto;
+}
+.section > .container > .right-box > .service > .integrated{
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 30px;
+    font-weight: 700;
+}
+.section > .container > .right-box > .service > .integrated > a{
+    color: #009AE9;
+}
+.section > .container > .right-box > .service > .integrated > span{
+    color: black;
+}
+.section > .container > .right-box > .service > .login > .form{
+    display: flex;
+    margin: 5px 0;
+}
+.section > .container > .right-box > .service > .login > .form > .input > input{
+    width: 200px;
+    height: 35px;
+    margin: 3px 0;
+    padding-left: 10px;
+    font-size: 15px;
+}
+.section > .container > .right-box > .service > .login > .form > .submit > .btn-login{
+    width: 95px;
+    height: 80px;
+    background-color: #2b489c;
+    color: white;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-size: 17px;
+    cursor:pointer;
+}
+
+.section > .container > .right-box > .service > .login > .form > .submit > .btn-login:hover{
+    background-color: #009AE9;
+    cursor: pointer;
+}
+
+.section > .container > .right-box > .service > .login > .submit > .btn-login:hover{
+    background-color: #009AE9;
+    cursor: pointer;
+}
+.section > .container > .right-box > .service > .signin{
+    width: 300px;
+    height: 60px;
+    background-color: #2b489c;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-size: 17px;
+}
+.section > .container > .right-box > .service > .signin:hover{
+    background-color: #009AE9;
+    cursor: pointer;
+}
+.section > .container > .right-box > .service > .signin > a{
+    display: inline-block;
+    text-align: center;
+    line-height: 60px;
+    width: 100%;
+    height: 100%;
+    color: white;
+}
+.section > .container > .right-box > .text{
+    margin-top: 120px;
+    margin-left: 20px;
+    font-size: 12px;
+}

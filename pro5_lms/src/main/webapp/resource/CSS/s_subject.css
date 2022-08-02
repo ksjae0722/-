@@ -1,0 +1,864 @@
+:root
+{
+    /*color*/
+    --color-white : white;
+    --color-black : #212B36;
+    --color-blue : #009AE9;
+    --color-grey : #637181;
+    --color-red : #E75555;
+    --color-green : #229915;
+    
+    /*font size*/
+    --font-large: 24px;
+    --font-medium: 20px;
+    --font-regular: 16px;
+    --font-small: 14px;
+    --font-micro: 13px;
+
+    /*font weight*/
+    --weight-bold: 700;
+    --weight-semi-bold: 600;
+    --weight-regular: 400;
+    --weight-small: 200;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Noto Sans KR', sans-serif;
+    list-style: none;
+    text-decoration: none;
+    font-size: var(--font-regular);
+}
+
+body{
+    display: flex;
+    background-color: rgba(145, 158, 171, 0.12);
+
+}
+
+/*좌측 네비바 시작*/
+#navbar{
+    width:280px;
+    background-color: white;
+    border-right: 1px solid rgb(189, 189, 196);
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+    z-index: 5;
+}
+
+#navbar > .nav_container{
+    width: 100%;
+    height: 100%;
+}
+
+#navbar > .nav_container > .nav_logo_container{
+    margin: 0 auto;
+}
+
+#navbar > .nav_container > .nav_logo_container > a{
+    height: 100px;
+}
+
+#navbar > .nav_container > .nav_logo_container > a > img{
+    max-width: 100%;
+    max-height: 100%;
+}
+
+#navbar > .nav_container > .nav_user_container{
+    height: 50px;
+    text-align: center;
+    margin-bottom: 70px;
+}
+
+#navbar > .nav_container > .nav_user_container > a{
+    display: inline-block;
+    width: 230px;
+    height: 80px;
+    line-height: 80px;
+    background-color: rgba(145, 158, 171, 0.12);
+    border-radius: 10px;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+#navbar > .nav_container > hr
+    {
+    margin: 10px 0;
+    color: rgb(189, 189, 196);
+    }
+
+
+#navbar > .nav_container > .nav_ul_container{
+    margin-bottom: 10px;
+    height: auto;
+}
+
+#navbar > .nav_container > .nav_ul_container > ul > div{
+    display: flex;
+}
+
+#navbar > .nav_container > .nav_ul_container > ul > div > i, label{
+    display: block;
+    line-height: 100%;
+    cursor: pointer;
+    padding: 15px 0 15px 10px;
+    font-size: var(--font-medium);
+    font-weight: var(--weight-regular);
+    color: #2b489c;
+    transition: all 200ms;
+}
+
+#navbar > .nav_container > .nav_ul_container > ul > div > label{
+    width: 100%;
+}
+
+#navbar > .nav_container > .nav_ul_container > ul:hover > div > i{
+    background-color: #009AE914;
+}
+
+#navbar > .nav_container > .nav_ul_container > ul:hover > div > label{
+    background-color: #009AE914;
+    border-right: 2px solid #2b489c;
+}
+
+#navbar > .nav_container > .nav_ul_container > ul > li{
+    background-color: var(--color-white);
+    height: 0;
+    padding: 0 40px;
+    opacity: 0;
+    visibility: hidden;
+    list-style: inside;
+    transition: all 200ms;
+}
+
+#navbar > .nav_container > .nav_ul_container > ul > li > a{
+    color: var(--color-black);
+    font-size: var(--font-regular);
+    font-weight: var(--weight-regular);
+}
+
+#navbar > .nav_container > .nav_ul_container > ul > #box1:checked ~ li{
+    opacity: 1;
+    height: auto;
+    padding: 10px 40px;
+    visibility: visible;
+    list-style: inside;
+    
+}
+
+#navbar > .nav_container > .nav_ul_container > ul > #box1:checked ~ div > i {
+    background-color: #009AE914;
+}
+
+#navbar > .nav_container > .nav_ul_container > ul > #box1:checked ~ div > label {
+    border-right: 2px solid #2b489c;
+    background-color: #009AE914;
+}
+
+#navbar > .nav_container > .nav_ul_container > ul > #box2:checked ~ li{
+    opacity: 1;
+    height: auto;
+    padding: 10px 40px;
+    visibility: visible;
+    list-style: inside;
+}
+#navbar > .nav_container > .nav_ul_container > ul > #box2:checked ~ div > i {
+    background-color: #009AE914;
+}
+
+#navbar > .nav_container > .nav_ul_container > ul > #box2:checked ~ div > label {
+    border-right: 2px solid #2b489c;
+    background-color: #009AE914;
+}
+
+#navbar > .nav_container > .nav_ul_container > ul > #box3:checked ~ li{
+    opacity: 1;
+    height: auto;
+    padding: 10px 40px;
+    visibility: visible;
+    list-style: inside;
+}
+
+#navbar > .nav_container > .nav_ul_container > ul > #box3:checked ~ div > i {
+    background-color: #009AE914;
+}
+
+#navbar > .nav_container > .nav_ul_container > ul > #box3:checked ~ div > label {
+    border-right: 2px solid #2b489c;
+    background-color: #009AE914;
+}
+
+#navbar > .nav_container > .nav_ul_container > ul > #box4:checked ~ li{
+    opacity: 1;
+    height: auto;
+    padding: 10px 40px;
+    visibility: visible;
+    list-style: inside;
+}
+#navbar > .nav_container > .nav_ul_container > ul > #box4:checked ~ div > i {
+    background-color: #009AE914;
+}
+
+#navbar > .nav_container > .nav_ul_container > ul > #box4:checked ~ div > label {
+    border-right: 2px solid #2b489c;
+    background-color: #009AE914;
+}
+
+#navbar > .nav_container > .nav_ul_container > ul > input{
+    display: none;
+}
+/*좌측 네비바 끝*/
+
+/*포맷(배너, 메인포함) 시작*/
+
+/*배너*/
+#main{
+    width: 100%;
+}
+
+#main > .banner{
+    background-color: white;
+    height: 60px;
+    display: flex;
+    justify-content: end;
+    padding-right: 50px;
+    align-items: center;
+    position: fixed;
+    z-index: 1;
+    width: 100%;
+}
+
+#main > .banner > input{
+    display: inline-block;
+    color: var(--color-black);
+    font-size: var(--font-small);
+    font-weight: var(--weight-semi-bold);
+    background-color: #009AE914;
+    border: 1px solid var(--color-blue);
+    border-radius: 10px;
+    cursor: pointer;
+    width: 80px;
+    height: 40px;
+    position: absolute;
+    z-index: 1;
+}
+/*배너 끝*/
+
+#main > .container{
+    margin-top: 60px;
+    padding-left: 280px;
+    background-color: transparent;
+    width: 100%;
+}
+
+/*****************틀*****************/
+
+/*해당 부분은 내용은 건드리지 말고 frame이후만 page에 맞게 수정 */
+#main > .container > .frame{
+    margin: 130px auto 0;
+    min-height: 850px;
+    min-width: 1200px;
+    height: 850px;
+    width: 1200px;
+    background-color: white;
+    border-radius: 20px;
+    padding: 20px;
+}
+
+/*프레임 시작*/
+
+/*제목*/
+#main > .container > .frame > .frame_top{
+    display: flex;
+    justify-content: space-between;
+    height: 80px;
+    border-bottom: 1px solid var(--color-black);
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+#main > .container > .frame > .frame_top > .title{
+    font-size: 24px;
+    font-weight: 700;
+}
+
+#main > .container > .frame > .frame_top > .title_sub{
+    display: none;
+}
+/*제목 끝*/
+/*내용 : 작성하시오~~~~~~~~~~~*/
+#main > .container > .frame > .frame_bottom
+    {
+    margin-top: 20px;
+    height: auto;
+    font-size: 0;
+    }
+
+#main > .container > .frame > .frame_bottom > input
+    {
+    display: none;
+    }
+
+#main > .container > .frame > .frame_bottom > label
+    {
+    background-color: rgba(145, 158, 171, 0.12);
+    display: inline-block;
+    width: 50%;
+    text-align: center;
+    }
+
+#main > .container > .frame > .frame_bottom > .right
+    {
+    border-radius: 10px 0 0 0;
+    }
+
+#main > .container > .frame > .frame_bottom > .left
+    {
+    border-radius: 0 10px 0 0;
+    }
+
+#main > .container > .frame > .frame_bottom > .subject
+    {
+    background-color: rgba(32, 36, 41, 0.12);
+    width: 100%;
+    height: 600px;
+    border-radius: 0 0 10px 10px;
+    padding: 0 20px;
+    display: none;
+    }
+
+#main > .container > .frame > .frame_bottom > input[id="open_subject"]:checked ~ .right
+    {
+    display: inline-block;
+    background-color: rgba(32, 36, 41, 0.12);
+    }
+
+#main >  .container > .frame > .frame_bottom > input[id="success_list"]:checked ~ .left
+    {
+    display: inline-block;
+    background-color: rgba(32, 36, 41, 0.12);
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject > .subject_title
+    {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    color: var(--color-black);
+    font-size: var(--font-medium);
+    font-weight: var(--weight-semi-bold);
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .case
+    {
+    display: flex;
+    height: 110px;
+
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .case > .major
+    {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40%;
+	margin-right: 1%;
+    border: 1px solid grey;
+    border-radius: 10px;
+    background-color: white;
+    color: var(--color-black);
+    font-size: var(--font-regular);
+    font-weight: var(--weight-semi-bold);
+    
+    }
+    
+
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .case > .major > p
+    {	
+    margin-left: 10px;
+    margin-right: 2%;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .case > .major > form
+    {
+    width: 350px;
+    height: 40px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .case > .major > form > .sel_sub
+    {
+    width: 260px;
+    height: 100%;
+    margin-right: 10px;
+    padding: 5px 10px;
+    color: var(--color-black);
+    font-size: var(--font-regular);
+    font-weight: var(--weight-regular);
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .case > .major > form > .sel_submit{
+	width: 50px;
+    height: 100%;
+    color: var(--color-black);
+    font-size: var(--font-regular);
+    font-weight: var(--weight-regular);
+}
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .case > .search
+    {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 59%;
+    border: 1px solid grey;
+    border-radius: 10px;
+    background-color: white;
+    color: var(--color-black);
+    font-size: var(--font-regular);
+    font-weight: var(--weight-semi-bold);
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .case > .search > p
+    {
+    margin-right: 2%;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .case > .search > form
+    {
+    width: 400px;
+    height: 40px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .case > .search > form > .text
+    {
+    width: 330px;
+    height: 100%;
+    margin-right: 10px;
+    padding: 5px 10px;
+    color: var(--color-black);
+    font-size: var(--font-regular);
+    font-weight: var(--weight-regular);
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .case > .search > form > .submit
+    {
+    width: 50px;
+    height: 100%;
+    color: var(--color-black);
+    font-size: var(--font-regular);
+    font-weight: var(--weight-regular);
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .head
+    {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .head > div
+    {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--color-black);
+    font-size: var(--font-medium);
+    font-weight: var(--weight-bold);
+    background-color: rgba(32, 36, 41, 0.12);
+    border-radius: 10px;
+    padding: 10px 0;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .head > .box.one
+    {
+    width: 130px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .head > .box.two
+    {
+    width: 130px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .head > .box.three
+    {
+    width: 300px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .head > .box.four
+    {
+    width: 120px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .head > .box.five
+    {
+    width: 100px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .head > .box.six
+    {
+    width: 120px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .head > .box.seven
+    {
+    width: 160px;
+    }
+
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .sugang
+    {
+    height: auto;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .sugang > .ul_container
+    {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .sugang > .ul_container > .ul_box.one
+    {
+    width: 130px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .sugang > .ul_container > .ul_box.two
+    {
+    width: 130px;
+    }
+    #main >  .container > .frame > .frame_bottom > .subject.right > .sugang > .ul_container > .ul_box.two > li
+    {
+    display: flex;
+    justify-content: center;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .sugang > .ul_container > .ul_box.three
+    {
+    width: 300px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .sugang > .ul_container > .ul_box.four
+    {
+    width: 120px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .sugang > .ul_container > .ul_box.four > li
+    {
+    display: flex;
+    justify-content: center;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .sugang > .ul_container > .ul_box.five
+    {
+    width: 100px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .sugang > .ul_container > .ul_box.five > li
+    {
+    display: flex;
+    justify-content: center;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .sugang > .ul_container > .ul_box.six
+    {
+    width: 120px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .sugang > .ul_container > .ul_box.six > li
+    {
+    display: flex;
+    justify-content: center;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .sugang > .ul_container > .ul_box.seven
+    {
+    width: 160px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .sugang > .ul_container > .ul_box.seven > li
+    {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    }
+    
+#main >  .container > .frame > .frame_bottom > .subject.right > .sugang > .ul_container > ul > li
+    {
+    background-color: rgba(145, 158, 171, 0.12);
+    border-radius: 10px;
+    height: 50px;
+    padding: 10px 10px;
+    margin-bottom: 10px;
+    color: var(--color-black);
+    font-size: var(--font-regular);
+    font-weight: var(--weight-semi-bold);
+    display: flex;
+    align-items: center;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .sugang > .ul_container > .ul_box.one > li
+    {
+    justify-content: center;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .sugang > .ul_container > .ul_box.one > li > a
+    {
+    width: 100%;
+    height: 100%;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .sugang > .ul_container > .ul_box.one > li > a > input
+    {
+    color: white;
+    border: 1px solid grey;
+    border-radius: 10px;
+    background-color: #2b489c;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .foot
+    {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 60px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.right > .foot > a > p
+    {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: var(--font-medium);
+    margin: 0 10px;
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(32, 36, 41, 0.12);
+    border-radius: 50%;
+    background-color: rgba(145, 158, 171, 0.12);
+    cursor: pointer;
+    }
+    
+#main >  .container > .frame > .frame_bottom > .subject.right > .foot > a > p:hover
+    {
+    background-color: rgba(145, 158, 171, 0.3);
+    }
+#main >  .container > .frame > .frame_bottom > .subject.right > .foot > a > p >i
+    {
+    color : black;
+    }
+
+
+#main >  .container > .frame > .frame_bottom > .subject.left > .head
+    {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.left > .head > div
+    {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--color-black);
+    font-size: var(--font-medium);
+    font-weight: var(--weight-bold);
+    background-color: rgba(32, 36, 41, 0.12);
+    border-radius: 10px;
+    padding: 10px 0;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.left > .head > .box.one
+    {
+    width: 130px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.left > .head > .box.two
+    {
+    width: 130px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.left > .head > .box.three
+    {
+    width: 300px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.left > .head > .box.four
+    {
+    width: 120px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.left > .head > .box.five
+    {
+    width: 100px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.left > .head > .box.six
+    {
+    width: 120px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.left > .head > .box.seven
+    {
+    width: 160px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.left > .sugang
+    {
+    height: auto;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.left > .sugang > .ul_container
+    {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.left > .sugang > .ul_container > .ul_box.one
+    {
+    width: 130px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.left > .sugang > .ul_container > .ul_box.two
+    {
+    width: 130px;
+    }
+#main >  .container > .frame > .frame_bottom > .subject.left > .sugang > .ul_container > .ul_box.two > li
+    {
+   	display: flex;
+    justify-content: center;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.left > .sugang > .ul_container > .ul_box.three
+    {
+    width: 300px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.left > .sugang > .ul_container > .ul_box.four
+    {
+    width: 120px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.left > .sugang > .ul_container > .ul_box.four > li
+    {
+    display: flex;
+    justify-content: center;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.left > .sugang > .ul_container > .ul_box.five
+    {
+    width: 100px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.left > .sugang > .ul_container > .ul_box.five > li
+    {
+    display: flex;
+    justify-content: center;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.left > .sugang > .ul_container > .ul_box.six
+    {
+    width: 120px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.left > .sugang > .ul_container > .ul_box.six > li
+    {
+    display: flex;
+    justify-content: center;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.left > .sugang > .ul_container > .ul_box.seven
+    {
+    width: 160px;
+    }
+#main >  .container > .frame > .frame_bottom > .subject.left > .sugang > .ul_container > .ul_box.seven > li
+    {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.left > .sugang > .ul_container > ul > li
+    {
+    background-color: rgba(145, 158, 171, 0.12);
+    border-radius: 10px;
+    height: 50px;
+    padding: 10px 10px;
+    margin-bottom: 10px;
+    color: var(--color-black);
+    font-size: var(--font-regular);
+    font-weight: var(--weight-semi-bold);
+    display: flex;
+    align-items: center;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.left > .sugang > .ul_container > .ul_box.one > li
+    {
+    justify-content: center;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.left > .sugang > .ul_container > .ul_box.one > li > a
+    {
+    width: 100%;
+    height: 100%;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.left > .sugang > .ul_container > .ul_box.one > li > a > input
+    {
+	color: white;
+    border: 1px solid grey;
+    border-radius: 10px;
+    background-color: #2b489c;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.left > .foot
+    {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 60px;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.left > .foot > p
+    {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: var(--font-medium);
+    margin: 0 10px;
+    width: 40px;
+    height: 40px;
+    border: 1px solid rgba(32, 36, 41, 0.12);
+    border-radius: 50%;
+    background-color: rgba(145, 158, 171, 0.12);
+    cursor: pointer;
+    }
+
+#main >  .container > .frame > .frame_bottom > .subject.left > p
+    {
+    margin-top: 20px;
+    color: red;
+    font-size: var(--font-regular);
+    font-weight: var(--weight-semi-bold);
+    }
+/*내용 끝*/
+/*프레임 끝*/
