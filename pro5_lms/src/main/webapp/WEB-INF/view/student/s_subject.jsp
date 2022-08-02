@@ -13,7 +13,7 @@
 	int pageNum = (Integer) request.getAttribute("pageNum"); //pageNum
 	int total_page = (Integer) request.getAttribute("total_page");
 	
-	String type = request.getParameter("type");
+	String type = (String) request.getAttribute("type");
 	if(type!=null){
 		if(type.equals("1")){
 			%>

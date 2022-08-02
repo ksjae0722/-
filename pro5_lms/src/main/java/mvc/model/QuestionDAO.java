@@ -149,82 +149,13 @@ public class QuestionDAO
 	/* 수강신청 시 공백 제출 답안 리스트 생성 / 학생 */
 	public void insertStuDabjiList(String s_name, int s_id)
 		{
-		Connection conn = null; 
-		PreparedStatement pstmt = null;
-		
-		String sql;
-		
-		try
-			{
-			sql = "insert into answer(ans_answer, sub_name, s_id) values(?,?,?)";
-			conn = DBConn.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, "");
-			pstmt.setString(2, s_name);
-			pstmt.setInt(3, s_id);
-			pstmt.executeUpdate();
-			}
-		
-		catch(Exception e)
-			{
-			System.out.println("Question : insertStuDabjiList() 에러 : " + e);
-			}
-		
-		finally
-			{
-			try
-				{
-				if (pstmt != null)
-					pstmt.close();
-				if (conn != null)
-					conn.close();
-				}
-			
-			catch (Exception e)
-				{
-				throw new RuntimeException(e.getMessage());
-				}
-			}
+		jdbcTemplate.update("insert into answer(ans_answer, sub_name, s_id) values(?,?,?)", "", s_name, s_id);
 		}
 	
 	/* 수강취소 시 공백 제출 답안 리스트 삭제 / 학생 */
 	public void deleteStuDabjiList(String s_name, int s_id)
 		{
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		String sql;
-
-		try
-			{
-			// DB생성
-			sql = "delete from answer where sub_name=? and s_id=?";
-			conn = DBConn.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, s_name);
-			pstmt.setInt(2, s_id);
-			pstmt.executeUpdate();
-			}
-		
-		catch (Exception ex)
-			{
-			System.out.println("Student : deleteSubject() 에러:" + ex);
-			}
-		
-		finally
-			{
-			try
-				{
-				if (pstmt != null)
-					pstmt.close();
-				if (conn != null)
-					conn.close();
-				}
-			
-			catch (Exception ex)
-				{
-				throw new RuntimeException(ex.getMessage());
-				}
-			}
+		jdbcTemplate.update("delete from answer where sub_name=? and s_id=?", s_name, s_id);
 		}
 	
 	/* 제출 답안이 있는지 확인 / 학생 */
@@ -285,69 +216,79 @@ public class QuestionDAO
 	/* 시험응시 가능한 상태인지 */
 	public ArrayList<QuestionDTO> isTest(ArrayList<ssubjectDTO> mySubList)
 		{
-		Connection conn = null; 
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		QuestionDTO queDTO = null;
-		ArrayList<QuestionDTO> queDTO_List = new ArrayList<QuestionDTO>();
-		
-		String sql;
+		ArrayList<QuestionDTO> q_dto_list = new ArrayList<QuestionDTO>();
+		List<ArrayList<QuestionDTO>> results = null;
 		
 		for (int i = 0; i < mySubList.size(); i++)
 			{
-			ssubjectDTO subDTO = mySubList.get(i);
-			try
-				{
-				sql = "select * from exam2 where sub_name=?";
-				conn = DBConn.getConnection();
-				pstmt = conn.prepareStatement(sql);
-				pstmt.setString(1, subDTO.getSub_name());
-				rs = pstmt.executeQuery();
-				
-				while(rs.next())
+			ssubjectDTO ss_dto = mySubList.get(i);
+			
+			results = jdbcTemplate.query
+				("select * from exam2 where sub_name=?",
+				new RowMapper<ArrayList<QuestionDTO>>()
 					{
-					queDTO = new QuestionDTO();
-					if (rs.getString("sub_name").equals(null))
-						{System.out.println(rs.getString("sub_name"));
-						queDTO.setAnslist("");
-						queDTO.setSub_name(subDTO.getSub_name());
-						}
-					
-					else
+					@Override
+					public ArrayList<QuestionDTO> mapRow(ResultSet rs, int rowNum) throws SQLException
 						{
-						queDTO.setAnslist(rs.getString("ex_ans2"));
-						queDTO.setSub_name(rs.getString("sub_name"));
+						QuestionDTO q_dto = new QuestionDTO();
+						
+						if (rs.getString("sub_name").equals(null))
+							{
+							q_dto.setAnslist("");
+							q_dto.setSub_name(ss_dto.getSub_name());
+							}
+						
+						else
+							{
+							q_dto.setAnslist(rs.getString("ex_ans2"));
+							q_dto.setSub_name(rs.getString("sub_name"));
+							}
+						
+						q_dto_list.add(q_dto);
+						
+						return q_dto_list;
 						}
-					
-					queDTO_List.add(queDTO);
-					}
-				}
-			
-			catch(Exception e)
-				{
-				System.out.println("Question : stu_getAnswer() 에러 : " + e);
-				}
-			
-			finally
-				{
-				try
-					{
-					if (rs != null) 
-						rs.close();	
-					if (pstmt != null) 
-						pstmt.close();	
-					if (conn != null) 
-						conn.close();
-					}
-				
-				catch (Exception e)
-					{
-					throw new RuntimeException(e.getMessage());
-					}
-				}
+					},
+				ss_dto.getSub_name()
+				);
 			}
 		
-		return queDTO_List;
+		return results.isEmpty() ? null:results.get(0);
+		
+		
+		/*
+		 * Connection conn = null; PreparedStatement pstmt = null; ResultSet rs = null;
+		 * QuestionDTO queDTO = null; ArrayList<QuestionDTO> queDTO_List = new
+		 * ArrayList<QuestionDTO>();
+		 * 
+		 * String sql;
+		 * 
+		 * for (int i = 0; i < mySubList.size(); i++) {
+		 * 
+		 * try { sql = "select * from exam2 where sub_name=?"; conn =
+		 * DBConn.getConnection(); pstmt = conn.prepareStatement(sql);
+		 * pstmt.setString(1, subDTO.getSub_name()); rs = pstmt.executeQuery();
+		 * 
+		 * while(rs.next()) { queDTO = new QuestionDTO(); if
+		 * (rs.getString("sub_name").equals(null))
+		 * {System.out.println(rs.getString("sub_name")); queDTO.setAnslist("");
+		 * queDTO.setSub_name(subDTO.getSub_name()); }
+		 * 
+		 * else { queDTO.setAnslist(rs.getString("ex_ans2"));
+		 * queDTO.setSub_name(rs.getString("sub_name")); }
+		 * 
+		 * queDTO_List.add(queDTO); } }
+		 * 
+		 * catch(Exception e) { System.out.println("Question : stu_getAnswer() 에러 : " +
+		 * e); }
+		 * 
+		 * finally { try { if (rs != null) rs.close(); if (pstmt != null) pstmt.close();
+		 * if (conn != null) conn.close(); }
+		 * 
+		 * catch (Exception e) { throw new RuntimeException(e.getMessage()); } } }
+		 * 
+		 * return queDTO_List;
+		 */
 		}
 	
 	/*성적산출페이지 : 답안지 들고오기*/

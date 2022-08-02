@@ -1,9 +1,11 @@
 package controller;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -83,11 +85,93 @@ public class StudentController
 	@RequestMapping("/s_subject")
 	public String s_subject(Model model, HttpSession session, @RequestParam(value = "pageNum", required = false) String PageNum, @RequestParam(value = "sel_sub", required = false) String sel_sub, @RequestParam(value = "code", required = false) String code)
 		{
+		Remember remember = (Remember) session.getAttribute("remember");
+		String s_id = remember.getId();
+		
 		RequestgetMajor(model);
 		getSubject(model, PageNum, sel_sub, code);
-		getmySubjectlist(request);
+		getmySubjectlist(model, s_id);
 		
 		return "board/s_subject";
+		}
+	
+	@RequestMapping("/subjectProcess")
+	public String subjectProcess(Model model, HttpSession session, @RequestParam(value = "subject") String subject)
+		{
+		Remember remember = (Remember) session.getAttribute("remember");
+		String s_id = remember.getId();
+		
+		int number = RequestsubProcess(model, s_id, subject);
+		model.addAttribute("type", number);
+		
+		if(number==5)
+			{
+			setmySubject(model, s_id, subject);
+			
+			return "http://localhost:8080/pro5_lms/student/s_subject";
+			}
+		
+		else
+			{
+			return "http://localhost:8080/pro5_lms/student/s_subject";
+			}
+		}
+	
+	@RequestMapping("/deleteProcess")
+	public String deleteProcess(Model model, HttpSession session, @RequestParam(value = "subject") String subject, @RequestParam(value = "pageNum", required = false) String PageNum, @RequestParam(value = "sel_sub", required = false) String sel_sub, @RequestParam(value = "code", required = false) String code)
+		{
+		Remember remember = (Remember) session.getAttribute("remember");
+		String s_id = remember.getId();
+		
+		RequestdeleteProcess(model, subject, s_id);
+		model.addAttribute("type", "4");
+		
+		RequestgetMajor(model);
+		getSubject(model, PageNum, sel_sub, code);
+		getmySubjectlist(model, s_id);
+		
+		return "board/s_subject";
+		}
+	
+	@RequestMapping("/s_schedule")
+	public String s_schedule(Model model, HttpSession session)
+		{
+		Remember remember = (Remember) session.getAttribute("remember");
+		String s_id = remember.getId();
+		
+		ArrayList<ssubjectDTO> mylist = getmySubjectlist(model, s_id);
+		getweekMap(model, mylist);
+		
+		return "board/s_schedule";
+		}
+	
+	@RequestMapping("/s_exam")
+	public String s_exam(Model model, HttpSession session, HttpServletRequest request)
+		{
+		Remember remember = (Remember) session.getAttribute("remember");
+		String s_id = remember.getId();
+		
+		ArrayList<ssubjectDTO> mySubList = getmySubjectlist(model, s_id);
+		isTest(model, mySubList);
+
+		Enumeration enu = request.getParameterNames();
+		ArrayList<String> arr = new ArrayList<String>();
+		while(enu.hasMoreElements())
+			{
+			String ans = (String)enu.nextElement();
+			arr.add(ans);
+			}
+		String ans = "";
+		for(int i = 0; i < arr.size()-1; i++)
+			{
+			ans = ans + request.getParameter(arr.get(i));
+			}
+		
+		updateAnswer(ans, request);
+		
+		stu_getAnswer(request, mySubList);
+		
+		return "board/s_exam";
 		}
 	
 	
@@ -201,13 +285,12 @@ public class StudentController
 			total_page =  total_page + 1;
 			}
 		
-		request.setAttribute("pageNum", pageNum);
-		request.setAttribute("total_page", total_page); 
-		request.setAttribute("TotalOfSubject", TotalOfSubject); //전체 과목 수
-		request.setAttribute("sublist", sublist);
-		request.setAttribute("searchmajor", sel_sub);
-		
-	}
+		model.addAttribute("pageNum", pageNum);
+		model.addAttribute("total_page", total_page); 
+		model.addAttribute("TotalOfSubject", TotalOfSubject); //전체 과목 수
+		model.addAttribute("sublist", sublist);
+		model.addAttribute("searchmajor", sel_sub);
+		}
 	
 	/*모든 학과 들고오기*/
 	public void RequestgetMajor(Model model)
@@ -218,111 +301,113 @@ public class StudentController
 		}
 	
 	/*수강신청 처리*/
-	public int RequestsubProcess(HttpServletRequest request) {
-		//System.out.println("1");
+	public int RequestsubProcess(Model model, String sid, String subject)
+		{
 		int number=5;
+		int s_id = Integer.parseInt(sid);
 		
-		
-		String sub_code = request.getParameter("subject"); //선택과목 고유코드
-		HttpSession session = request.getSession();
-		String sid = (String) session.getAttribute("s_id");
-		int s_id = Integer.parseInt(sid); 
-		
-		StudentDAO dao = StudentDAO.getInstance(); 
-		ssubjectDTO subjectDTO = dao.getssubjectDTO(sub_code); //선택과목 DTO
-		StudentDTO s_DTO = dao.getinfo(s_id); //학생정보 DTO 
+		ssubjectDTO ss_dto = s_dao.getssubjectDTO(subject); //선택과목 DTO
+		StudentDTO s_dto = s_dao.getinfo(s_id); //학생정보 DTO
 		
 		String day; //요일
 		String[] classtime; //수강신청한 과목들의 수업시간
-		String[] subjecttime = subjectDTO.getSub_classtime().split(","); //선택과목 수업시간 분리
-		ArrayList<String[]> time = new ArrayList<String[]>(); 
-		ArrayList<ssubjectDTO> list = null; //수강신청한 과목(DTO)들의 arraylist
+		String[] subjecttime = ss_dto.getSub_classtime().split(","); //선택과목 수업시간 분리
+		ArrayList<String[]> time = new ArrayList<String[]>();
 		
-		int count = dao.countmySubject(s_id); //수강신청한 과목 갯수세는 함수
+		int count = s_dao.countmySubject(s_id); //수강신청한 과목 갯수세는 함수
 		
 		//1. 과목 최대수강인원 비교
-		int numOfstudent = dao.numberOfstudent(sub_code);
+		int numOfstudent = s_dao.numberOfstudent(subject);
 		numOfstudent = numOfstudent+1;
 		
-		if(numOfstudent>subjectDTO.getSub_max()) {
+		if(numOfstudent>ss_dto.getSub_max())
+			{
 			number = 3;
 			return number;
-		}
+			}
 
 		//* 수강신청이 되어있지않은 경우
-		if(count==0) {
+		if(count==0)
+			{
 			return number;
-		}
+			}
 
-		list = dao.mySubject(s_id);
+		ArrayList<ssubjectDTO> list = s_dao.mySubject(s_id); //수강신청한 과목(DTO)들의 arraylist
 		
 		//2. 내 최대학점과 비교
-		int sub_hakjum = subjectDTO.getSub_hakjum();
-		int s_hakjum = s_DTO.getS_max();
+		int sub_hakjum = ss_dto.getSub_hakjum();
+		int s_hakjum = s_dto.getS_max();
 		int hakjum = sub_hakjum + s_hakjum;
 		
-		if(hakjum>18) {
+		if(hakjum>18)
+			{
 			number = 1;
 			return number;
-		}
+			}
 
 		//4. 요일비교
-		for(int i=0; i<list.size(); i++) {
+		for(int i=0; i<list.size(); i++)
+			{
 			day = list.get(i).getSub_day();
-			if(day.equals(subjectDTO.getSub_day())) {
+			if(day.equals(ss_dto.getSub_day()))
+				{
 				classtime = list.get(i).getSub_classtime().split(",");
 				time.add(classtime);
+				}
 			}
-		}
 
-		if(time.size()==0) {
+		if(time.size()==0)
+			{
 			return number;
-		}
+			}
 		
 		//5. 시간비교
-		for(int i=0; i<time.size(); i++) {
-			for(int j=0; j<time.get(i).length; j++) {
+		for(int i=0; i<time.size(); i++)
+			{
+			for(int j=0; j<time.get(i).length; j++)
+				{
 				String compare = (time.get(i))[j];
 
-				if(compare.equals(subjecttime[0])) {
+				if(compare.equals(subjecttime[0]))
+					{
 					number = 2;
 					return number;
-				}
-				else if(compare.equals(subjecttime[1])) {
+					}
+				
+				else if(compare.equals(subjecttime[1]))
+					{
 					number = 2;
 					return number;
-				}
-				else if(compare.equals(subjecttime[2])){
+					}
+				
+				else if(compare.equals(subjecttime[2]))
+					{
 					number = 2;
 					return number;
+					}
 				}
 			}
-		}
+		
 		return number;
-	}	
+		}
 	
 	/*선택한 과목 수강신청에 넣기*/
-	public void setmySubject(HttpServletRequest request) {
-		String sub_code = request.getParameter("subject"); //선택과목 고유코드
-		HttpSession session = request.getSession();
-		String sid = (String) session.getAttribute("s_id");
-		int s_id = Integer.parseInt(sid); 
+	public void setmySubject(Model model, String sid, String subject)
+		{
+		int s_id = Integer.parseInt(sid);
 		
-		StudentDAO dao = StudentDAO.getInstance();
-		QuestionDAO queDAO = QuestionDAO.getInstance();
+		ssubjectDTO ss_dto = s_dao.getssubjectDTO(subject); //선택과목 DTO
+		String s_name = ss_dto.getSub_name(); //선택과목 이름
+		StudentDTO s_dto = s_dao.getinfo(s_id); //학생정보 DTO 
 		
-		ssubjectDTO subjectDTO = dao.getssubjectDTO(sub_code); //선택과목 DTO
-		String s_name = subjectDTO.getSub_name(); //선택과목 이름
-		StudentDTO s_DTO = dao.getinfo(s_id); //학생정보 DTO 
-		
-		int sub_hakjum = subjectDTO.getSub_hakjum();
-		int s_hakjum = s_DTO.getS_max();
+		int sub_hakjum = ss_dto.getSub_hakjum();
+		int s_hakjum = s_dto.getS_max();
 		int hakjum = sub_hakjum + s_hakjum;
 		
-		dao.plusSubject(sub_code, s_id, s_name);
-		dao.updatehakjum(hakjum, s_id);
-		queDAO.insertStuDabjiList(s_name, s_id);
-	}
+		s_dao.plusSubject(subject, s_id, s_name);
+		s_dao.updatehakjum(hakjum, s_id);
+		q_dao.insertStuDabjiList(s_name, s_id);
+		}
 	
 	/*내 수강과목 가져오기*/
 	public ArrayList<ssubjectDTO> getmySubjectlist(Model model, String sid)
@@ -336,50 +421,46 @@ public class StudentController
 		}
 
 	/*선택한 과목 수강신청에서 삭제하기*/
-	public void RequestdeleteProcess(HttpServletRequest request) {
-		String sub_code = request.getParameter("subject"); //선택과목 고유코드
-		HttpSession session = request.getSession();
-		String sid = (String) session.getAttribute("s_id");
-		int s_id = Integer.parseInt(sid); 
+	public void RequestdeleteProcess(Model model, String subject, String sid)
+		{
+		int s_id = Integer.parseInt(sid);
 		
-		StudentDAO dao = StudentDAO.getInstance();
-		QuestionDAO queDAO = QuestionDAO.getInstance();
+		ssubjectDTO ss_dto = s_dao.getssubjectDTO(subject); //선택과목 DTO
+		String sub_name = ss_dto.getSub_name();
+		StudentDTO s_dto = s_dao.getinfo(s_id); //학생정보 DTO
+		String s_name = ss_dto.getSub_name(); //선택과목 이름
 		
-		ssubjectDTO subjectDTO = dao.getssubjectDTO(sub_code); //선택과목 DTO
-		String sub_name = subjectDTO.getSub_name();
-		StudentDTO s_DTO = dao.getinfo(s_id); //학생정보 DTO
-		String s_name = subjectDTO.getSub_name(); //선택과목 이름
+		int sub_hakjum = ss_dto.getSub_hakjum();
+		int s_hakjum = s_dto.getS_max();
+		int hakjum = s_hakjum - sub_hakjum;
 		
-		int sub_hakjum = subjectDTO.getSub_hakjum();
-		int s_hakjum = s_DTO.getS_max();
-		int hakjum = s_hakjum-sub_hakjum;
-		
-		dao.deleteSubject(sub_code, s_id);
-		dao.updatehakjum(hakjum, s_id);
-		queDAO.deleteStuDabjiList(s_name, s_id);
+		s_dao.deleteSubject(subject, s_id);
+		s_dao.updatehakjum(hakjum, s_id);
+		q_dao.deleteStuDabjiList(s_name, s_id);
 		//시험 성적 처리에서 삭제
-		dao.deletelecture(s_id, sub_name);
-		
-	}
+		s_dao.deletelecture(s_id, sub_name);
+		}
 
 	/*시간표 출력 전처리*/
-	public void getweekMap(HttpServletRequest request) {
+	public void getweekMap(Model model, ArrayList<ssubjectDTO> mylist)
+		{
 		Map<String, ssubjectDTO> tmap = new HashMap<>();
-		ArrayList<ssubjectDTO> mylist = (ArrayList<ssubjectDTO>) request.getAttribute("mylist");
 		
-		for(int i=0; i<mylist.size(); i++) {
-			ssubjectDTO dto = mylist.get(i);
-			String day = dto.getSub_day();
-			int hakjum = dto.getSub_hakjum();
-			int start = dto.getSub_time();
+		for(int i=0; i < mylist.size(); i++)
+			{
+			ssubjectDTO ss_dto = mylist.get(i);
+			String day = ss_dto.getSub_day();
+			int hakjum = ss_dto.getSub_hakjum();
+			int start = ss_dto.getSub_time();
 			
-			for(int j=start; j<start+hakjum; j++) {
-				tmap.put(day+j, dto);
+			for(int j=start; j<start+hakjum; j++)
+				{
+				tmap.put(day+j, ss_dto);
+				}
 			}
-		}
 		
-		request.setAttribute("tmap", tmap);
-	}
+		model.addAttribute("tmap", tmap);
+		}
 	
 	/*해당 과목 문제 가져오기*/
 	public void getQuestion(HttpServletRequest request)
@@ -396,13 +477,11 @@ public class StudentController
 		}
 	
 	/* 시험이 출제되었는지 확인 */
-	public void isTest(ArrayList<ssubjectDTO> mySubList, HttpServletRequest request)
+	public void isTest(Model model, ArrayList<ssubjectDTO> mySubList)
 		{
-		QuestionDAO queDAO = QuestionDAO.getInstance();
+		ArrayList<QuestionDTO> isTest_List = q_dao.isTest(mySubList);
 		
-		ArrayList<QuestionDTO> isTest_List = queDAO.isTest(mySubList);
-		
-		request.setAttribute("isTest_List", isTest_List);
+		model.addAttribute("isTest_List", isTest_List);
 		}
 	
 	/*제출 답안 저장*/

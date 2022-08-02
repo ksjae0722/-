@@ -87,188 +87,124 @@ public class StudentDAO
 	/* 수강신청페이지 : 검색과목 몇개인지 들고오기 */
 	public int s_searchListCount(String code)
 		{
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-
-		int x = 0;
-
-		String sql;
-
-		if (code.charAt(0) == 'S' || code.charAt(0) == 's') {
-			try {
-				conn = DBConn.getConnection();
-
-				sql = "select count(*) from ssubject where sub_code=?";
-				pstmt = conn.prepareStatement(sql);
-				pstmt.setString(1, code);
-
-				rs = pstmt.executeQuery();
-
-				if (rs.next()) {
-					x = rs.getInt(1);
-				}
-			} catch (Exception ex) {
-				System.out.println("s_searchListCount() 에러: " + ex);
-			} finally {
-				try {
-					if (rs != null)
-						rs.close();
-					if (pstmt != null)
-						pstmt.close();
-					if (conn != null)
-						conn.close();
-				} catch (Exception ex) {
-					throw new RuntimeException(ex.getMessage());
-				}
+		int results;
+		
+		if (code.charAt(0) == 'S' || code.charAt(0) == 's')
+			{
+			results = jdbcTemplate.queryForObject("select count(*) from ssubject where sub_code=?", Integer.class, code);
 			}
-		} else {
-			try {
-				conn = DBConn.getConnection();
-
-				sql = "select count(*) from ssubject where sub_name like '%" + code + "%'";
-				pstmt = conn.prepareStatement(sql);
-
-				rs = pstmt.executeQuery();
-
-				if (rs.next()) {
-					x = rs.getInt(1);
-				}
-			} catch (Exception ex) {
-				System.out.println("s_getListCount() 에러: " + ex);
-			} finally {
-				try {
-					if (rs != null)
-						rs.close();
-					if (pstmt != null)
-						pstmt.close();
-					if (conn != null)
-						conn.close();
-				} catch (Exception ex) {
-					throw new RuntimeException(ex.getMessage());
-				}
+		
+		else
+			{
+			results = jdbcTemplate.queryForObject("select count(*) from ssubject where sub_name like '%" + code + "%'", Integer.class);
 			}
+		
+		return results;
 		}
-
-		return x;
-	}
 
 	/* 수강신청페이지 : 검색 과목DTO DB에서 가져오기 */
-	public ArrayList<ssubjectDTO> searchSubjectList(int page, int limit, String code) {
-
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-
+	public ArrayList<ssubjectDTO> searchSubjectList(int page, int limit, String code)
+		{
 		int TotalOfSubject = s_searchListCount(code);
 		int start = (page - 1) * limit;
-		int index = start + 1;
-
+		index = start + 1;
+		
 		ArrayList<ssubjectDTO> list = new ArrayList<ssubjectDTO>();
+		List<ArrayList<ssubjectDTO>> results;
+		
+		if (code.charAt(0) == 'S' || code.charAt(0) == 's')
+			{
+			results
+			= jdbcTemplate.query
+				("select * from ssubject where sub_code=?",
+				new RowMapper<ArrayList<ssubjectDTO>>()
+					{
+					@Override
+					public ArrayList<ssubjectDTO> mapRow(ResultSet rs, int rowNum) throws SQLException
+						{
+						do
+							{
+							ssubjectDTO s_dto = new ssubjectDTO();
 
-		String sql;
+							s_dto.setD_name(rs.getString("d_name"));
+							s_dto.setP_id(rs.getString("p_id"));
+							s_dto.setP_name(rs.getString("p_name"));
+							s_dto.setSub_allday(rs.getInt("sub_allday"));
+							s_dto.setSub_code(rs.getString("sub_code"));
+							s_dto.setSub_day(rs.getString("sub_day"));
+							s_dto.setSub_hakjum(rs.getInt("sub_hakjum"));
+							s_dto.setSub_isu(rs.getString("sub_isu"));
+							s_dto.setSub_name(rs.getString("sub_name"));
+							s_dto.setSub_time(rs.getInt("sub_time"));
+							s_dto.setSub_room(rs.getInt("sub_room"));
+							s_dto.setSub_classtime(rs.getString("sub_classtime"));
 
-		if (code.charAt(0) == 'S' || code.charAt(0) == 's') {
-			try {
-				conn = DBConn.getConnection();
-
-				sql = "select * from ssubject where sub_code=?";
-				pstmt = conn.prepareStatement(sql);
-				pstmt.setString(1, code);
-
-				rs = pstmt.executeQuery();
-
-				while (rs.absolute(index)) {
-					ssubjectDTO subject = new ssubjectDTO();
-
-					subject.setD_name(rs.getString("d_name"));
-					subject.setP_id(rs.getString("p_id"));
-					subject.setP_name(rs.getString("p_name"));
-					subject.setSub_allday(rs.getInt("sub_allday"));
-					subject.setSub_code(rs.getString("sub_code"));
-					subject.setSub_day(rs.getString("sub_day"));
-					subject.setSub_hakjum(rs.getInt("sub_hakjum"));
-					subject.setSub_isu(rs.getString("sub_isu"));
-					subject.setSub_name(rs.getString("sub_name"));
-					subject.setSub_time(rs.getInt("sub_time"));
-					subject.setSub_room(rs.getInt("sub_room"));
-					subject.setSub_classtime(rs.getString("sub_classtime"));
-
-					list.add(subject);
-
-					if (index < (start + limit) && index <= TotalOfSubject) {
-						index++;
-					} else {
-						break;
-					}
-				}
-				return list;
-			} catch (Exception ex) {
-				System.out.println("s_searchListCount() 에러: " + ex);
-			} finally {
-				try {
-					if (rs != null)
-						rs.close();
-					if (pstmt != null)
-						pstmt.close();
-					if (conn != null)
-						conn.close();
-				} catch (Exception ex) {
-					throw new RuntimeException(ex.getMessage());
-				}
+							list.add(s_dto);
+							
+							if(index < (start + limit) && index<=TotalOfSubject)
+								{
+								index++;
+								}
+							else
+								{
+								break;
+								}
+							} while(rs.absolute(index));
+						
+						return list;
+						}
+					},
+				code
+				);
 			}
-		} else {
-			try {
-				conn = DBConn.getConnection();
+		
+		else
+			{
+			results
+			= jdbcTemplate.query
+				("select * from ssubject where sub_name like '%" + code + "%'",
+				new RowMapper<ArrayList<ssubjectDTO>>()
+					{
+					@Override
+					public ArrayList<ssubjectDTO> mapRow(ResultSet rs, int rowNum) throws SQLException
+						{
+						do
+							{
+							ssubjectDTO s_dto = new ssubjectDTO();
 
-				sql = "select * from ssubject where sub_name like '%" + code + "%'";
-				pstmt = conn.prepareStatement(sql);
+							s_dto.setD_name(rs.getString("d_name"));
+							s_dto.setP_id(rs.getString("p_id"));
+							s_dto.setP_name(rs.getString("p_name"));
+							s_dto.setSub_allday(rs.getInt("sub_allday"));
+							s_dto.setSub_code(rs.getString("sub_code"));
+							s_dto.setSub_day(rs.getString("sub_day"));
+							s_dto.setSub_hakjum(rs.getInt("sub_hakjum"));
+							s_dto.setSub_isu(rs.getString("sub_isu"));
+							s_dto.setSub_name(rs.getString("sub_name"));
+							s_dto.setSub_time(rs.getInt("sub_time"));
+							s_dto.setSub_room(rs.getInt("sub_room"));
+							s_dto.setSub_classtime(rs.getString("sub_classtime"));
 
-				rs = pstmt.executeQuery();
-
-				while (rs.absolute(index)) {
-					ssubjectDTO subject = new ssubjectDTO();
-
-					subject.setD_name(rs.getString("d_name"));
-					subject.setP_id(rs.getString("p_id"));
-					subject.setP_name(rs.getString("p_name"));
-					subject.setSub_allday(rs.getInt("sub_allday"));
-					subject.setSub_code(rs.getString("sub_code"));
-					subject.setSub_day(rs.getString("sub_day"));
-					subject.setSub_hakjum(rs.getInt("sub_hakjum"));
-					subject.setSub_isu(rs.getString("sub_isu"));
-					subject.setSub_name(rs.getString("sub_name"));
-					subject.setSub_time(rs.getInt("sub_time"));
-					subject.setSub_room(rs.getInt("sub_room"));
-					subject.setSub_classtime(rs.getString("sub_classtime"));
-
-					list.add(subject);
-
-					if (index < (start + limit) && index <= TotalOfSubject) {
-						index++;
-					} else {
-						break;
+							list.add(s_dto);
+							
+							if(index < (start + limit) && index<=TotalOfSubject)
+								{
+								index++;
+								}
+							else
+								{
+								break;
+								}
+							} while(rs.absolute(index));
+						
+						return list;
+						}
 					}
-				}
-				return list;
-
-			} catch (Exception ex) {
-				System.out.println("s_getListCount() 에러: " + ex);
-			} finally {
-				try {
-					if (rs != null)
-						rs.close();
-					if (pstmt != null)
-						pstmt.close();
-					if (conn != null)
-						conn.close();
-				} catch (Exception ex) {
-					throw new RuntimeException(ex.getMessage());
-				}
+				);
 			}
+		
+		return results.isEmpty() ? null:results.get(0);
 		}
-		return null;
-	}
 
 	/* 수강신청페이지 : 학과불러오기 */
 	public ArrayList<departmentDTO> getMajor()
@@ -406,152 +342,59 @@ public class StudentDAO
 		}
 
 	/* 수강신청페이지 : 해당과목 DB에서 가져오기 */
-	public ssubjectDTO getssubjectDTO(String sub_code) {
-
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		String sql;
-		ssubjectDTO subject = new ssubjectDTO();
-
-		try {
-			conn = DBConn.getConnection();
-
-			sql = "select * from ssubject where sub_code=?";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, sub_code);
-
-			rs = pstmt.executeQuery();
-
-			if (rs.next()) {
-
-				subject.setD_name(rs.getString("d_name"));
-				subject.setP_id(rs.getString("p_id"));
-				subject.setP_name(rs.getString("p_name"));
-				subject.setSub_allday(rs.getInt("sub_allday"));
-				subject.setSub_code(rs.getString("sub_code"));
-				subject.setSub_day(rs.getString("sub_day"));
-				subject.setSub_hakjum(rs.getInt("sub_hakjum"));
-				subject.setSub_isu(rs.getString("sub_isu"));
-				subject.setSub_name(rs.getString("sub_name"));
-				subject.setSub_time(rs.getInt("sub_time"));
-				subject.setSub_room(rs.getInt("sub_room"));
-				subject.setSub_classtime(rs.getString("sub_classtime"));
-				subject.setSub_max(rs.getInt("sub_max"));
-			}
-		} catch (Exception ex) {
-			System.out.println("getssubjectDTO() 에러 : " + ex);
-		} finally {
-			try { // null
-				if (rs != null)
-					rs.close();
-				if (pstmt != null)
-					pstmt.close();
-				if (conn != null)
-					conn.close();
-			} catch (Exception ex) {
-				throw new RuntimeException(ex.getMessage());
-			}
+	public ssubjectDTO getssubjectDTO(String sub_code)
+		{
+		List<ssubjectDTO> results
+		= jdbcTemplate.query
+			("select * from ssubject where sub_code=?",
+			new RowMapper<ssubjectDTO>()
+				{
+				@Override
+				public ssubjectDTO mapRow(ResultSet rs, int rowNum) throws SQLException
+					{
+					ssubjectDTO ss_dto = new ssubjectDTO();
+					ss_dto.setD_name(rs.getString("d_name"));
+					ss_dto.setP_id(rs.getString("p_id"));
+					ss_dto.setP_name(rs.getString("p_name"));
+					ss_dto.setSub_allday(rs.getInt("sub_allday"));
+					ss_dto.setSub_code(rs.getString("sub_code"));
+					ss_dto.setSub_day(rs.getString("sub_day"));
+					ss_dto.setSub_hakjum(rs.getInt("sub_hakjum"));
+					ss_dto.setSub_isu(rs.getString("sub_isu"));
+					ss_dto.setSub_name(rs.getString("sub_name"));
+					ss_dto.setSub_time(rs.getInt("sub_time"));
+					ss_dto.setSub_room(rs.getInt("sub_room"));
+					ss_dto.setSub_classtime(rs.getString("sub_classtime"));
+					ss_dto.setSub_max(rs.getInt("sub_max"));
+					
+					return ss_dto;
+					}
+				},
+			sub_code
+			);
+		
+		return results.isEmpty() ? null:results.get(0);
 		}
-		return subject;
-	}
 
 	/* 수강신청페이지:학생 최대학점 업데이트 / 학점 더하거나 학점 빼기*/
-	public void updatehakjum(int hakjum, int s_id) {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		String sql;
-
-		try {
-			// DB생성
-			sql = "update student set s_max=? where s_id=?";
-			conn = DBConn.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, hakjum);
-			pstmt.setInt(2, s_id);
-			pstmt.executeUpdate();
-		} catch (Exception ex) {
-			System.out.println("Student : updatehakjum() 에러:" + ex);
-		} finally {
-			try {
-				if (pstmt != null)
-					pstmt.close();
-				if (conn != null)
-					conn.close();
-			} catch (Exception ex) {
-				throw new RuntimeException(ex.getMessage());
-			}
+	public void updatehakjum(int hakjum, int s_id)
+		{
+		jdbcTemplate.update("update student set s_max=? where s_id=?", hakjum, s_id);
 		}
-
-	}
 
 	/* 수강신청페이지 : 해당과목 수강인원 */
-	public int numberOfstudent(String sub_code) {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-
-		int x = 0;
-
-		String sql;
-
-		try {
-			conn = DBConn.getConnection();
-			sql = "select count(*) from application where sub_code=?";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, sub_code);
-
-			rs = pstmt.executeQuery();
-
-			if (rs.next()) {
-				x = rs.getInt(1);
-			}
-		} catch (Exception ex) {
-			System.out.println("numberOfpeople() 에러: " + ex);
-		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-				if (pstmt != null)
-					pstmt.close();
-				if (conn != null)
-					conn.close();
-			} catch (Exception ex) {
-				throw new RuntimeException(ex.getMessage());
-			}
+	public int numberOfstudent(String sub_code)
+		{
+		int results = jdbcTemplate.queryForObject("select count(*) from application where sub_code=?", Integer.class, sub_code);
+		
+		return results;
 		}
-		return x;
-	}
 
 	/* 수강신청페이지 : 수강신청한 과목 DB에 넣기 */
-	public void plusSubject(String sub_code, int s_id, String sub_name) {
-
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		String sql;
-
-		try {
-			// DB생성
-			sql = "insert into application(s_id, sub_name, sub_code) values(?,?,?)";
-			conn = DBConn.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, s_id);
-			pstmt.setString(2, sub_name);
-			pstmt.setString(3, sub_code);
-			pstmt.executeUpdate();
-		} catch (Exception ex) {
-			System.out.println("Student : plusSubject() 에러:" + ex);
-		} finally {
-			try {
-				if (pstmt != null)
-					pstmt.close();
-				if (conn != null)
-					conn.close();
-			} catch (Exception ex) {
-				throw new RuntimeException(ex.getMessage());
-			}
+	public void plusSubject(String sub_code, int s_id, String sub_name)
+		{
+		jdbcTemplate.update("insert into application(s_id, sub_name, sub_code) values(?,?,?)", s_id, sub_name, sub_code);
 		}
-	}
 
 	/* 수강신청페이지 : 내 수강신청 리스트 */
 	public ArrayList<ssubjectDTO> mySubject(int s_id)
@@ -597,99 +440,24 @@ public class StudentDAO
 		}
 
 	/* 수강신청페이지 : 내 수강과목 갯수 확인하기 */
-	public int countmySubject(int s_id) {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-
-		int x = 0;
-
-		String sql;
-
-		try {
-			conn = DBConn.getConnection();
-			sql = "select count(*) from application where s_id=? ";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, s_id);
-
-			rs = pstmt.executeQuery();
-
-			if (rs.next()) {
-				x = rs.getInt(1);
-			}
-		} catch (Exception ex) {
-			System.out.println("countmySubject() 에러: " + ex);
-		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-				if (pstmt != null)
-					pstmt.close();
-				if (conn != null)
-					conn.close();
-			} catch (Exception ex) {
-				throw new RuntimeException(ex.getMessage());
-			}
+	public int countmySubject(int s_id)
+		{
+		int results = jdbcTemplate.queryForObject("select count(*) from application where s_id = ?", Integer.class, s_id);
+		
+		return results;
 		}
-		return x;
-	}
 
 	/* 수강신청페이지 : 선택한 과목 수강신청에서 삭제*/
-	public void deleteSubject(String sub_code, int s_id) {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		String sql;
-
-		try {
-			// DB생성
-			sql = "delete from application where s_id=? and sub_code=?";
-			conn = DBConn.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, s_id);
-			pstmt.setString(2, sub_code);
-			pstmt.executeUpdate();
-		} catch (Exception ex) {
-			System.out.println("Student : deleteSubject() 에러:" + ex);
-		} finally {
-			try {
-				if (pstmt != null)
-					pstmt.close();
-				if (conn != null)
-					conn.close();
-			} catch (Exception ex) {
-				throw new RuntimeException(ex.getMessage());
-			}
+	public void deleteSubject(String sub_code, int s_id)
+		{
+		jdbcTemplate.update("delete from application where s_id=? and sub_code=?", s_id, sub_code);
 		}
-	}
 	
 	/*수강신청페이지 : 삭제한 과목 성적처리에서 삭제*/
-	public void deletelecture(int s_id, String sub_name) {
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		String sql;
-		
-		try {
-			sql = "delete from lecture where s_id=? and sub_name=?";
-			conn = DBConn.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, s_id);
-			pstmt.setString(2, sub_name);
-			pstmt.executeUpdate();
-		}catch (Exception ex) {
-			System.out.println("Student : deletelecture() 에러:" + ex);
-		} finally {
-			try {
-				if (pstmt != null)
-					pstmt.close();
-				if (conn != null)
-					conn.close();
-			} catch (Exception ex) {
-				throw new RuntimeException(ex.getMessage());
-			}
+	public void deletelecture(int s_id, String sub_name)
+		{
+		jdbcTemplate.update("delete from lecture where s_id=? and sub_name=?", s_id, sub_name);
 		}
-		
-	}
-	
 	
 	/* 시간표페이지 : 내 수강신청 리스트를 요일별로 정렬*/
 	public ArrayList<ssubjectDTO> lineupWeek(ArrayList<ssubjectDTO> mylist, String day){
