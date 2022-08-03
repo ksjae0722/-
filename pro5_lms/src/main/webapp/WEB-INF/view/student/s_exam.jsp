@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
+<%@ page language="java" contentType="text/html; charset=UTF-8" session = "true"
     pageEncoding="UTF-8"%>
 <%@ page import = "mvc.model.ssubjectDTO" %>
 <%@ page import = "mvc.model.QuestionDTO" %>
@@ -41,7 +41,7 @@ ArrayList<QuestionDTO> isTest_List = (ArrayList<QuestionDTO>)request.getAttribut
                 <a href = "http://localhost:8080/pro5_lms/student/s_main"><img src="../resource/images/logo.png" alt="ITUNIVERSITY"></a>
             </div>
             <div class = "nav_user_container">
-                <a><%=session.getAttribute("s_name") %></a>
+                <a>${remember.getName()}</a>
             </div>
             <div class = "nav_ul_container information">
                 <ul>

@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
+<%@ page language="java" contentType="text/html; charset=UTF-8" session = "true"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -19,7 +19,7 @@
                 <a href = "s_main.css"><img src="../resource/images/logo.png" alt="ITUNIVERSITY"></a>
             </div>
             <div class = "nav_user_container">
-                <a>김학생</a>
+                <a>${remember.getName()}</a>
             </div>
             <div class = "nav_ul_container information">
                 <ul>

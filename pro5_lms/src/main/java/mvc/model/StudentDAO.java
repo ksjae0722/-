@@ -38,7 +38,7 @@ public class StudentDAO
 					StudentDTO s_dto = new StudentDTO();
 					s_dto.setS_id(rs.getInt("s_id"));
 					s_dto.setS_name(rs.getString("s_name"));
-					s_dto.setS_college(rs.getNString("s_college"));
+					s_dto.setS_college(rs.getString("s_college"));
 					s_dto.setS_grade(rs.getInt("s_grade"));
 					s_dto.setD_name(rs.getString("d_name"));
 					s_dto.setS_email(rs.getString("s_email"));

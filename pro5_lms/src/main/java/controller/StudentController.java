@@ -38,12 +38,12 @@ import mvc.model.ssubjectDTO;
 public class StudentController
 	{
 	AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext(AppCtx.class);
-	private applicationDAO a_dao;
-	private BoardDAO b_dao;
-	private calendarDAO c_dao;
-	private notice_boardDAO nb_dao;
-	private QuestionDAO q_dao;
-	private StudentDAO s_dao;
+	private applicationDAO a_dao = ctx.getBean("applicationDAO", applicationDAO.class);
+	private BoardDAO b_dao = ctx.getBean("boardDAO", BoardDAO.class);
+	private calendarDAO c_dao = ctx.getBean("calendarDAO", calendarDAO.class);
+	private notice_boardDAO nb_dao = ctx.getBean("notice_boardDAO", notice_boardDAO.class);
+	private QuestionDAO q_dao = ctx.getBean("questionDAO", QuestionDAO.class);
+	private StudentDAO s_dao = ctx.getBean("studentDAO", StudentDAO.class);
 	
 	@RequestMapping("/s_main")
 	public String s_main(Model model, HttpSession session, @RequestParam(value = "pageNum", required = false) String PageNum, @RequestParam(value = "CpageNum", required = false) String c_PageNum, @RequestParam(value = "nbPageNum", required = false) String nb_PageNum, @RequestParam(value = "subjects", required = false) String subjects)
@@ -56,7 +56,7 @@ public class StudentController
 		requestBoardList(model, PageNum, subjects); //과목별게시판
 		getNotice(model, nb_PageNum); //공지사항
 		
-		return "board/s_main";
+		return "student/s_main";
 		}
 	
 	@RequestMapping("/s_info")
@@ -65,9 +65,9 @@ public class StudentController
 		Remember remember = (Remember) session.getAttribute("remember");
 		String s_id = remember.getId();
 		
-		getdto(model, s_id);
+		getdto(model, s_id);System.out.println("100");
 		
-		return "board/s_info";
+		return "student/s_info";
 		}
 	
 	@RequestMapping("/modify_process")
@@ -79,7 +79,7 @@ public class StudentController
 		modify(model, s_id, s_address, s_phone, s_email, s_account1, s_account2, s_account3);
 		getdto(model, s_id);
 		
-		return "board/s_info";
+		return "student/s_info";
 		}
 	
 	@RequestMapping("/s_subject")
@@ -92,7 +92,7 @@ public class StudentController
 		getSubject(model, PageNum, sel_sub, code);
 		getmySubjectlist(model, s_id);
 		
-		return "board/s_subject";
+		return "student/s_subject";
 		}
 	
 	@RequestMapping("/subjectProcess")
@@ -130,7 +130,7 @@ public class StudentController
 		getSubject(model, PageNum, sel_sub, code);
 		getmySubjectlist(model, s_id);
 		
-		return "board/s_subject";
+		return "student/s_subject";
 		}
 	
 	@RequestMapping("/s_schedule")
@@ -142,7 +142,7 @@ public class StudentController
 		ArrayList<ssubjectDTO> mylist = getmySubjectlist(model, s_id);
 		getweekMap(model, mylist);
 		
-		return "board/s_schedule";
+		return "student/s_schedule";
 		}
 	
 	@RequestMapping("/s_exam")
@@ -171,7 +171,7 @@ public class StudentController
 		
 		stu_getAnswer(model, mySubList, s_id);
 		
-		return "board/s_exam";
+		return "student/s_exam";
 		}
 	
 	@RequestMapping("/s_popup_exam")
@@ -179,7 +179,7 @@ public class StudentController
 		{
 		getQuestion(model, subject);
 		
-		return "board/s_popup_exam";
+		return "student/s_popup_exam";
 		}
 	
 	@RequestMapping("/s_inquiry")
@@ -192,7 +192,7 @@ public class StudentController
 		ArrayList<ssubjectDTO> isuhakjum = getisuhakjum(scorelist);
 		calculatetotal(model, scorelist, isuhakjum);
 		
-		return "board/s_inquiry";
+		return "student/s_inquiry";
 		}
 	
 	/*info - db에서 data가져오기*/
@@ -465,16 +465,19 @@ public class StudentController
 		{
 		Map<String, ssubjectDTO> tmap = new HashMap<>();
 		
-		for(int i=0; i < mylist.size(); i++)
+		if (mylist != null)
 			{
-			ssubjectDTO ss_dto = mylist.get(i);
-			String day = ss_dto.getSub_day();
-			int hakjum = ss_dto.getSub_hakjum();
-			int start = ss_dto.getSub_time();
-			
-			for(int j=start; j<start+hakjum; j++)
+			for(int i=0; i < mylist.size(); i++)
 				{
-				tmap.put(day+j, ss_dto);
+				ssubjectDTO ss_dto = mylist.get(i);
+				String day = ss_dto.getSub_day();
+				int hakjum = ss_dto.getSub_hakjum();
+				int start = ss_dto.getSub_time();
+				
+				for(int j=start; j<start+hakjum; j++)
+					{
+					tmap.put(day+j, ss_dto);
+					}
 				}
 			}
 		

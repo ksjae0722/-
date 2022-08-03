@@ -14,7 +14,7 @@ public class AppCtx
 		{
 		DataSource ds = new DataSource();
 		ds.setDriverClassName("com.mysql.jdbc.Driver");
-		ds.setUrl("jdbc:mysql://localhost:3306/pro5_lms?characterEncoding = utf8&autoReconnect=true");
+		ds.setUrl("jdbc:mysql://localhost:3306/pro5_lms?characterEncoding = utf8");
 		ds.setUsername("root");
 		ds.setPassword("1234");
 		ds.setInitialSize(20);
