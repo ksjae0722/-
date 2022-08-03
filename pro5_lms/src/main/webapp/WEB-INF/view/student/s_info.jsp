@@ -60,7 +60,7 @@
     <nav id = "navbar">
         <div class = "nav_container">
             <div class = "nav_logo_container">
-                <a href = "http://localhost:8080/pro5_lms/student/s_main.so"><img src="../resource/images/logo.png" alt="ITUNIVERSITY"></a>
+                <a href = "http://localhost:8080/pro5_lms/student/s_main"><img src="../resource/images/logo.png" alt="ITUNIVERSITY"></a>
             </div>
             <div class = "nav_user_container">
                 <a><%=session.getAttribute("s_name") %></a>
@@ -73,7 +73,7 @@
                         <label for="box1">학적 관리</label>
                     </div>
                     
-                    <li><a href="http://localhost:8080/pro5_lms/student/s_info.so">기본 정보 조회</a></li>
+                    <li><a href="http://localhost:8080/pro5_lms/student/s_info">기본 정보 조회</a></li>
                 </ul>
             </div>
 
@@ -87,8 +87,8 @@
                         <label for="box2">수강 신청</label>
                     </div>
                     
-                    <li><a href="http://localhost:8080/pro5_lms/student/s_subject.so">수강 신청</a></li>
-                    <li><a href="http://localhost:8080/pro5_lms/student/s_schedule.so">시간표 조회</a></li>
+                    <li><a href="http://localhost:8080/pro5_lms/student/s_subject">수강 신청</a></li>
+                    <li><a href="http://localhost:8080/pro5_lms/student/s_schedule">시간표 조회</a></li>
                 </ul>
             </div>
 
@@ -102,7 +102,7 @@
                         <label for="box3">시험 응시</label>
                     </div>
                    
-                    <li><a href="http://localhost:8080/pro5_lms/student/s_exam.so">시험 응시</a></li>
+                    <li><a href="http://localhost:8080/pro5_lms/student/s_exam">시험 응시</a></li>
                 </ul>
             </div>
 
@@ -116,7 +116,7 @@
                         <label for="box4">성적 조회</label>
                     </div>
                     
-                    <li><a href="http://localhost:8080/pro5_lms/student/s_inquiry.so">성적 조회</a></li>
+                    <li><a href="http://localhost:8080/pro5_lms/student/s_inquiry">성적 조회</a></li>
                 </ul>
             </div>
         </div>
@@ -126,14 +126,14 @@
     <section id="main">
         <!--배너 시작-->
         <div class ="banner">
-            <input type="button" value="로그아웃" onClick="location.href='http://localhost:8080/pro5_lms/member/logout.do'">
+            <input type="button" value="로그아웃" onClick="location.href='http://localhost:8080/pro5_lms/member/logout'">
         </div>
         <!--배너 끝-->
     <!--기본 틀 안에 내용 작성-->
         <div class ="container">
             <!--프레임 시작 // class명(frame)은 페이지에 맞게 수정-->
             <div class="frame">
-                <form action = "modify_process.so" name = "s_infos">
+                <form action = "modify_process" name = "s_infos">
                     <div class="frame_top">
                         <div class="title">기본 정보 조회</div>
                         <!--수정은 기본 display-none 필요하면 사용-->

@@ -13,8 +13,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import mvc.database.DBConn;
-
 public class MemberDAO
 	{
 	private JdbcTemplate jdbcTemplate;

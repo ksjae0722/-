@@ -49,7 +49,7 @@ if (num==1){
     <nav id = "navbar">
         <div class = "nav_container">
             <div class = "nav_logo_container">
-                <a href = "http://localhost:8080/pro5_lms/student/s_main.so"><img src="../resource/images/logo.png" alt="ITUNIVERSITY"></a>
+                <a href = "http://localhost:8080/pro5_lms/student/s_main"><img src="../resource/images/logo.png" alt="ITUNIVERSITY"></a>
             </div>
             <div class = "nav_user_container">
                 <a><%=session.getAttribute("s_name") %></a>
@@ -62,7 +62,7 @@ if (num==1){
                         <label for="box1">학적 관리</label>
                     </div>
                     
-                    <li><a href="http://localhost:8080/pro5_lms/student/s_info.so">기본 정보 조회</a></li>
+                    <li><a href="http://localhost:8080/pro5_lms/student/s_info">기본 정보 조회</a></li>
                 </ul>
             </div>
 
@@ -76,8 +76,8 @@ if (num==1){
                         <label for="box2">수강 신청</label>
                     </div>
                     
-                    <li><a href="http://localhost:8080/pro5_lms/student/s_subject.so">수강 신청</a></li>
-                    <li><a href="http://localhost:8080/pro5_lms/student/s_schedule.so">시간표 조회</a></li>
+                    <li><a href="http://localhost:8080/pro5_lms/student/s_subject">수강 신청</a></li>
+                    <li><a href="http://localhost:8080/pro5_lms/student/s_schedule">시간표 조회</a></li>
                 </ul>
             </div>
 
@@ -91,7 +91,7 @@ if (num==1){
                         <label for="box3">시험 응시</label>
                     </div>
                    
-                    <li><a href="http://localhost:8080/pro5_lms/student/s_exam.so">시험 응시</a></li>
+                    <li><a href="http://localhost:8080/pro5_lms/student/s_exam">시험 응시</a></li>
                 </ul>
             </div>
 
@@ -105,7 +105,7 @@ if (num==1){
                         <label for="box4">성적 조회</label>
                     </div>
                     
-                    <li><a href="http://localhost:8080/pro5_lms/student/s_inquiry.so">성적 조회</a></li>
+                    <li><a href="http://localhost:8080/pro5_lms/student/s_inquiry">성적 조회</a></li>
                 </ul>
             </div>
         </div>
@@ -115,7 +115,7 @@ if (num==1){
     <section id="format">
         <!--배너 시작-->
         <div class ="banner">
-            <input type="button" value="로그아웃"  onClick="location.href='http://localhost:8080/pro5_lms/member/logout.do'">
+            <input type="button" value="로그아웃"  onClick="location.href='http://localhost:8080/pro5_lms/member/logout'">
         </div>
         <!--배너 끝-->
         <div class="main">
@@ -127,7 +127,7 @@ if (num==1){
                 <div class = "middle">
                     <div class = "left">
                         <div class = "info_container">
-                            <a href = "<c:url value='/board/s_noticeboardlist.notice'/>">공지사항</a>
+                            <a href = "<c:url value='/board/s_noticeboardlist'/>">공지사항</a>
                             <div>
 								<%
 								if (nbPageNum == 1)
@@ -137,7 +137,7 @@ if (num==1){
 								else
 									{
 	                        	%>
-                                	<a href="http://localhost:8080/pro5_lms/student/s_main.so?nbPageNum=<%=nbPageNum-1%>"><i class="fa-solid fa-angle-left"></i></a>
+                                	<a href="http://localhost:8080/pro5_lms/student/s_main?nbPageNum=<%=nbPageNum-1%>"><i class="fa-solid fa-angle-left"></i></a>
 								<%
 									}
 
@@ -148,7 +148,7 @@ if (num==1){
 								else
 									{
 								%>
-                                <a href="http://localhost:8080/pro5_lms/student/s_main.so?nbPageNum=<%=nbPageNum+1%>"><i class="fa-solid fa-angle-right"></i></a>
+                                <a href="http://localhost:8080/pro5_lms/student/s_main?nbPageNum=<%=nbPageNum+1%>"><i class="fa-solid fa-angle-right"></i></a>
 								<%
 									}
 								%>
@@ -161,7 +161,7 @@ if (num==1){
                             		{
                             		notice_boardDTO nbDTO = nbArr.get(i);
                             	%>
-                            		<li><div class="list"><%= nbDTO.getN_num() %></div><a href="http://localhost:8080/pro5_lms/board/s_notice.notice?num=<%=nbDTO.getN_num()%>&pageNum=<%=nbPageNum%>"><%=nbDTO.getN_subject()%></a></li>
+                            		<li><div class="list"><%= nbDTO.getN_num() %></div><a href="http://localhost:8080/pro5_lms/board/s_notice?num=<%=nbDTO.getN_num()%>&pageNum=<%=nbPageNum%>"><%=nbDTO.getN_subject()%></a></li>
                             	<%
                             		}
                             	%>
@@ -172,8 +172,8 @@ if (num==1){
                         <div class = "info_container">
                             <p>학사일정</p>
                             <div>
-                                <a href="http://localhost:8080/pro5_lms/student/s_main.so?CpageNum=<%=CpageNum-1%>"><i class="fa-solid fa-angle-left"></i></a>
-                                <a href="http://localhost:8080/pro5_lms/student/s_main.so?CpageNum=<%=CpageNum+1%>"><i class="fa-solid fa-angle-right"></i></a>
+                                <a href="http://localhost:8080/pro5_lms/student/s_main?CpageNum=<%=CpageNum-1%>"><i class="fa-solid fa-angle-left"></i></a>
+                                <a href="http://localhost:8080/pro5_lms/student/s_main?CpageNum=<%=CpageNum+1%>"><i class="fa-solid fa-angle-right"></i></a>
                             </div>
                         </div>
                         <div class = "ul_container">
@@ -192,9 +192,9 @@ if (num==1){
                 </div>
                 <div class = "bottom">
                     <div class = "top">
-                        <a href = "http://localhost:8080/pro5_lms/board/ListAction2.go?pageNum=1">과목별 게시판</a>
+                        <a href = "http://localhost:8080/pro5_lms/board/ListAction2?pageNum=1">과목별 게시판</a>
                         
-                        <form action="http://localhost:8080/pro5_lms/student/s_main.so">
+                        <form action="http://localhost:8080/pro5_lms/student/s_main">
 	                        <select name="subjects" id="class">
 	                            <option value="sub_all">전체</option>
 				               <%
@@ -217,7 +217,7 @@ if (num==1){
 							BoardDTO dto =  (BoardDTO) boardlist.get(i); 	
 					 	%> 
 	                        <ul>
-	                            <li><div class="list"><%=dto.getPo_num() %></div><a href="http://localhost:8080/pro5_lms/board/s_post.go?num=<%=dto.getPo_num()%>&pageNum=<%=pageNum%>"><%=dto.getPo_subject()%></a></li>
+	                            <li><div class="list"><%=dto.getPo_num() %></div><a href="http://localhost:8080/pro5_lms/board/s_post?num=<%=dto.getPo_num()%>&pageNum=<%=pageNum%>"><%=dto.getPo_subject()%></a></li>
 	                        </ul>
                         <%
 							}
@@ -234,7 +234,7 @@ if (num==1){
 			                    }
 			                    else{
 		                    %>
-		                    	<a href="http://localhost:8080/pro5_lms/student/s_main.so?pageNum=<%=pageNum-1%>"><i class="fa-solid fa-angle-left"></i></a>
+		                    	<a href="http://localhost:8080/pro5_lms/student/s_main?pageNum=<%=pageNum-1%>"><i class="fa-solid fa-angle-left"></i></a>
 		                    <%
 			                    }
 		                    	if(pageNum==total_page){
@@ -244,7 +244,7 @@ if (num==1){
 		                    	}
 		                    	else{
 		                    %>
-		                        <a href="http://localhost:8080/pro5_lms/student/s_main.so?pageNum=<%=pageNum+1%>"><i class="fa-solid fa-angle-right"></i></a>
+		                        <a href="http://localhost:8080/pro5_lms/student/s_main?pageNum=<%=pageNum+1%>"><i class="fa-solid fa-angle-right"></i></a>
 		                    <%
 		                    	}
 		                    %>        

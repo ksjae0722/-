@@ -11,8 +11,6 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
-import mvc.database.DBConn;
-
 public class QuestionDAO
 	{
 	private JdbcTemplate jdbcTemplate;
@@ -108,42 +106,7 @@ public class QuestionDAO
 	/* 제출 답안 리스트 업데이트 / 학생 */
 	public void stu_insertAnswer(String ans, String subject_name, int s_id)
 		{
-		Connection conn = null; 
-		PreparedStatement pstmt = null;
-		
-		String sql;
-		
-		try
-			{
-			sql = "update answer set ans_answer=? where sub_name=? and s_id=?";
-			conn = DBConn.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, ans);
-			pstmt.setString(2, subject_name);
-			pstmt.setInt(3, s_id);
-			pstmt.executeUpdate();
-			}
-		
-		catch(Exception e)
-			{
-			System.out.println("Question : stu_insertAnswer() 에러 : " + e);
-			}
-		
-		finally
-			{
-			try
-				{
-				if (pstmt != null)
-					pstmt.close();
-				if (conn != null)
-					conn.close();
-				}
-			
-			catch (Exception e)
-				{
-				throw new RuntimeException(e.getMessage());
-				}
-			}
+		jdbcTemplate.update("update answer set ans_answer=? where sub_name=? and s_id=?", ans, subject_name, s_id);
 		}
 	
 	/* 수강신청 시 공백 제출 답안 리스트 생성 / 학생 */
@@ -161,56 +124,26 @@ public class QuestionDAO
 	/* 제출 답안이 있는지 확인 / 학생 */
 	public QuestionDTO stu_getAnswer(String subject_name, int s_id)
 		{
-		Connection conn = null; 
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		QuestionDTO queDTO = null;
-		ArrayList<QuestionDTO> queDTO_List = new ArrayList<QuestionDTO>();
-		
-		String sql;
-		
-		try
-			{
-			sql = "select * from answer where sub_name=? and s_id=?";
-			conn = DBConn.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, subject_name);
-			pstmt.setInt(2, s_id);
-			rs = pstmt.executeQuery();
-			
-			while(rs.next())
+		List<QuestionDTO> results
+		= jdbcTemplate.query
+			("select * from answer where sub_name=? and s_id=?",
+			new RowMapper<QuestionDTO>()
 				{
-				queDTO = new QuestionDTO();
-				queDTO.setAnslist(rs.getString("ans_answer"));
-				queDTO.setSub_name(rs.getString("sub_name"));
-				queDTO.setS_id(rs.getInt("s_id"));
-				}
-			}
+				@Override
+				public QuestionDTO mapRow(ResultSet rs, int rowNum) throws SQLException
+					{
+					QuestionDTO q_dto = new QuestionDTO();
+					q_dto.setAnslist(rs.getString("ans_answer"));
+					q_dto.setSub_name(rs.getString("sub_name"));
+					q_dto.setS_id(rs.getInt("s_id"));
+					
+					return q_dto;
+					}
+				},
+			subject_name, s_id
+			);
 		
-		catch(Exception e)
-			{
-			System.out.println("Question : stu_getAnswer() 에러 : " + e);
-			}
-		
-		finally
-			{
-			try
-				{
-				if (rs != null) 
-					rs.close();	
-				if (pstmt != null) 
-					pstmt.close();	
-				if (conn != null) 
-					conn.close();
-				}
-			
-			catch (Exception e)
-				{
-				throw new RuntimeException(e.getMessage());
-				}
-			}
-		
-		return queDTO;
+		return results.isEmpty() ? null: results.get(0);
 		}
 	
 	/* 시험응시 가능한 상태인지 */

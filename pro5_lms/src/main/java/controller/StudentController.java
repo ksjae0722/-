@@ -146,7 +146,7 @@ public class StudentController
 		}
 	
 	@RequestMapping("/s_exam")
-	public String s_exam(Model model, HttpSession session, HttpServletRequest request)
+	public String s_exam(Model model, HttpSession session, @RequestParam(value = "subject_name", required = false) String subject_name, HttpServletRequest request)
 		{
 		Remember remember = (Remember) session.getAttribute("remember");
 		String s_id = remember.getId();
@@ -167,14 +167,33 @@ public class StudentController
 			ans = ans + request.getParameter(arr.get(i));
 			}
 		
-		updateAnswer(ans, request);
+		updateAnswer(ans, s_id, subject_name);
 		
-		stu_getAnswer(request, mySubList);
+		stu_getAnswer(model, mySubList, s_id);
 		
 		return "board/s_exam";
 		}
 	
+	@RequestMapping("/s_popup_exam")
+	public String s_popup_exam(Model model, HttpSession session, @RequestParam(value = "subject") String subject)
+		{
+		getQuestion(model, subject);
+		
+		return "board/s_popup_exam";
+		}
 	
+	@RequestMapping("/s_inquiry")
+	public String s_inquiry(Model model, HttpSession session)
+		{
+		Remember remember = (Remember) session.getAttribute("remember");
+		String s_id = remember.getId();
+		
+		ArrayList<lectureDTO> scorelist = inquiry(s_id);
+		ArrayList<ssubjectDTO> isuhakjum = getisuhakjum(scorelist);
+		calculatetotal(model, scorelist, isuhakjum);
+		
+		return "board/s_inquiry";
+		}
 	
 	/*info - db에서 data가져오기*/
 	public void getdto(Model model, String sid)
@@ -463,17 +482,14 @@ public class StudentController
 		}
 	
 	/*해당 과목 문제 가져오기*/
-	public void getQuestion(HttpServletRequest request)
+	public void getQuestion(Model model, String subject)
 		{
-		String sub_name = request.getParameter("subject");
+		ArrayList<QuestionDTO> q_dto_list = new ArrayList<QuestionDTO>();
 		
-		ArrayList<QuestionDTO> queDTO_list = new ArrayList<QuestionDTO>();
-		QuestionDAO queDAO = QuestionDAO.getInstance();
+		q_dto_list = q_dao.getExam(subject);
 		
-		queDTO_list = queDAO.getExam(sub_name);
-		
-		request.setAttribute("sub_name", sub_name);
-		request.setAttribute("queDTO_list", queDTO_list);
+		model.addAttribute("sub_name", subject);
+		model.addAttribute("queDTO_list", q_dto_list);
 		}
 	
 	/* 시험이 출제되었는지 확인 */
@@ -485,41 +501,30 @@ public class StudentController
 		}
 	
 	/*제출 답안 저장*/
-	public void updateAnswer(String ans, HttpServletRequest request)
+	public void updateAnswer(String ans, String sid, String subject_name)
 		{
-		HttpSession session = request.getSession();
-		String sid = (String) session.getAttribute("s_id");
 		int s_id = Integer.parseInt(sid);
 		
-		String subject_name = request.getParameter("subject_name");
-		QuestionDAO queDAO = QuestionDAO.getInstance();
-		//System.out.println(ans);
-		//System.out.println(subject_name);
-		
-		queDAO.stu_insertAnswer(ans, subject_name, s_id);
+		q_dao.stu_insertAnswer(ans, subject_name, s_id);
 		}
 	
 	/*이미 답안을 제출했는지 확인*/
-	public void stu_getAnswer(HttpServletRequest request, ArrayList<ssubjectDTO> mySubList)
+	public void stu_getAnswer(Model model, ArrayList<ssubjectDTO> mySubList, String sid)
 		{
-		QuestionDTO queDTO;
-		QuestionDAO queDAO = QuestionDAO.getInstance();
-		ArrayList<QuestionDTO> queDTO_List = new ArrayList<QuestionDTO>();
+		ArrayList<QuestionDTO> q_dto_list = new ArrayList<QuestionDTO>();
 		
-		HttpSession session = request.getSession();
-		String sid = (String) session.getAttribute("s_id");
 		int s_id = Integer.parseInt(sid);
 
 		for(int i=0; i < mySubList.size(); i++)
 			{
-			ssubjectDTO subDTO = mySubList.get(i);
-			String subject_name = subDTO.getSub_name();
-			queDTO = queDAO.stu_getAnswer(subject_name, s_id);
+			ssubjectDTO ss_dto = mySubList.get(i);
+			String subject_name = ss_dto.getSub_name();
+			QuestionDTO q_dto = q_dao.stu_getAnswer(subject_name, s_id);
 			
-			queDTO_List.add(queDTO);
+			q_dto_list.add(q_dto);
 			}
 		
-		request.setAttribute("queDTO_List", queDTO_List);
+		model.addAttribute("queDTO_List", q_dto_list);
 		}
 	
 	/*main페이지 - 게시글 DB에서 불러오기*/
@@ -602,81 +607,99 @@ public class StudentController
 		}   
 
 	/*성적조회 페이지 - 내 성적 들고오기*/
-	public void inquiry(HttpServletRequest request) {
-		StudentDAO dao = StudentDAO.getInstance();
-		
-		HttpSession session = request.getSession();
-		String sid = (String) session.getAttribute("s_id");
+	public ArrayList<lectureDTO> inquiry(String sid)
+		{
 		int s_id = Integer.parseInt(sid);
 		
-		ArrayList<lectureDTO> scorelist = dao.inquirylist(s_id);
-		//System.out.println(scorelist.get(0).getSub_name());
-		request.setAttribute("scorelist", scorelist);
-	}
+		ArrayList<lectureDTO> scorelist = s_dao.inquirylist(s_id);
+		
+		return scorelist;
+		}
 
 	/*성적조회 페이지 - 이수구분 들고오기*/
-	public void getisuhakjum(HttpServletRequest request) {
-		StudentDAO dao = StudentDAO.getInstance();
-		
-		ArrayList<lectureDTO> scorelist = (ArrayList<lectureDTO>) request.getAttribute("scorelist");
+	public ArrayList<ssubjectDTO> getisuhakjum(ArrayList<lectureDTO> scorelist)
+		{
 		ArrayList<ssubjectDTO> isuhakjum = new ArrayList<ssubjectDTO>();
 		
-		for(int i=0; i<scorelist.size(); i++) {
+		for(int i=0; i<scorelist.size(); i++)
+			{
 			String subject = scorelist.get(i).getSub_name();
-			ssubjectDTO dto = dao.isuhakjumlist(subject);
+			ssubjectDTO dto = s_dao.isuhakjumlist(subject);
 			isuhakjum.add(dto);
-		}
+			}
 		
-		request.setAttribute("isuhakjum", isuhakjum);
-	}
+		return isuhakjum;
+		}
 	
 	/*성적조회 페이지 - 학점, 평점계산*/
-	public void calculatetotal(HttpServletRequest request) {
-		ArrayList<lectureDTO> scorelist = (ArrayList<lectureDTO>) request.getAttribute("scorelist");
-		ArrayList<ssubjectDTO> isuhakjum = (ArrayList<ssubjectDTO>) request.getAttribute("isuhakjum");
+	public void calculatetotal(Model model, ArrayList<lectureDTO> scorelist, ArrayList<ssubjectDTO> isuhakjum)
+		{
 		int totalhakjum=0; //총 신청학점
 		int gethakjum=0; //총 취득학점
 		float finalscore=0; //총 평점
 		float average=0;
 		
 		//총 신청학점
-		for(int i=0; i<isuhakjum.size(); i++) {
+		for(int i=0; i<isuhakjum.size(); i++)
+			{
 			totalhakjum += isuhakjum.get(i).getSub_hakjum();
-		}
+			}
 		
 		//총 취득학점
-		for(int i=0; i<scorelist.size(); i++) {
-			if(!scorelist.get(i).getLec_score().equals("F")) {
-				if(scorelist.get(i).getSub_name().equals(isuhakjum.get(i).getSub_name())) {
+		for(int i=0; i<scorelist.size(); i++)
+			{
+			if(!scorelist.get(i).getLec_score().equals("F"))
+				{
+				if(scorelist.get(i).getSub_name().equals(isuhakjum.get(i).getSub_name()))
+					{
 					gethakjum += isuhakjum.get(i).getSub_hakjum();
+					}
 				}
 			}
-		}
 		
 		int count=0;
 		//평균평점
-		for(int i=0; i<scorelist.size(); i++) {
+		for(int i=0; i<scorelist.size(); i++)
+			{
 			String score = scorelist.get(i).getLec_score();
-			if(score.equals("A+")) {
+			
+			if(score.equals("A+"))
+				{
 				finalscore += 4.5;
-			}else if(score.equals("A")) {
+				}
+			else if(score.equals("A"))
+				{
 				finalscore += 4.0;
-			}else if(score.equals("B+")) {
+				}
+			else if(score.equals("B+"))
+				{
 				finalscore += 3.5;
-			}else if(score.equals("B")) {
+				}
+			else if(score.equals("B"))
+				{
 				finalscore += 3.0;
-			}else if(score.equals("C+")) {
+				}
+			else if(score.equals("C+"))
+				{
 				finalscore += 2.5;
-			}else if(score.equals("C")) {
+				}
+			else if(score.equals("C"))
+				{
 				finalscore += 2.0;
-			}else if(score.equals("D+")) {
+				}
+			else if(score.equals("D+"))
+				{
 				finalscore += 1.5;
-			}else if(score.equals("D+")) {
+				}
+			else if(score.equals("D+"))
+				{
 				finalscore += 1.0;
-			}else if(score.equals("F")) {
+				}
+			else if(score.equals("F"))
+				{
 				count++;
+				}
 			}
-		}
 		
 		// 총학점/(과목수-F학점과목수)
 		average = (float) finalscore/(scorelist.size()-count);
@@ -688,8 +711,8 @@ public class StudentController
 //		System.out.println(finalscore);
 //		System.out.println(average);
 		
-		request.setAttribute("totalhakjum", totalhakjum);
-		request.setAttribute("gethakjum", gethakjum);
-		request.setAttribute("average", average);
-	}
+		model.addAttribute("totalhakjum", totalhakjum);
+		model.addAttribute("gethakjum", gethakjum);
+		model.addAttribute("average", average);
+		}
 	}

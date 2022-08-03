@@ -11,7 +11,6 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
-import mvc.database.DBConn;
 import mvc.model.BoardDTO;
 import mvc.model.ssubjectDTO;
 

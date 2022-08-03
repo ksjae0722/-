@@ -11,7 +11,6 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
-import mvc.database.DBConn;
 import mvc.model.*;
 
 public class StudentDAO
@@ -474,98 +473,65 @@ public class StudentDAO
 	}
 
 	/* 성적조회페이지 : 성적조회 목록 가져오기*/
-	public ArrayList<lectureDTO> inquirylist(int s_id){
-		ArrayList<lectureDTO> scorelist = new ArrayList<lectureDTO>();
+	public ArrayList<lectureDTO> inquirylist(int s_id)
+		{
+		ArrayList<lectureDTO> l_dto_list = new ArrayList<lectureDTO>();
 		
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		String sql;
+		List<ArrayList<lectureDTO>> results
+		= jdbcTemplate.query
+			("select * from lecture where s_id = ?",
+			new RowMapper<ArrayList<lectureDTO>>()
+				{
+				@Override
+				public ArrayList<lectureDTO> mapRow(ResultSet rs, int rowNum) throws SQLException
+					{
+					do
+						{
+						lectureDTO l_dto = new lectureDTO();
+						l_dto.setS_id(rs.getInt("s_id"));
+						l_dto.setSub_name(rs.getString("sub_name"));
+						l_dto.setLec_score(rs.getString("lec_score"));
+						l_dto.setLec_no_date(rs.getInt("lec_no_date"));
+						l_dto.setLec_year(rs.getInt("lec_year"));
+						l_dto.setLec_semester(rs.getInt("lec_semester"));
+						
+						l_dto_list.add(l_dto);
+						} while(rs.next());
+					
+					return l_dto_list;
+					}
+				},
+			s_id
+			);
 		
-
-		try {
-			conn = DBConn.getConnection();
-
-			sql = "select * from lecture where s_id=?";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, s_id);
-
-			rs = pstmt.executeQuery();
-
-			while (rs.next()) {
-				lectureDTO score = new lectureDTO();
-				score.setS_id(rs.getInt("s_id"));
-				score.setSub_name(rs.getString("sub_name"));
-				score.setLec_score(rs.getString("lec_score"));
-				score.setLec_no_date(rs.getInt("lec_no_date"));
-				score.setLec_year(rs.getInt("lec_year"));
-				score.setLec_semester(rs.getInt("lec_semester"));
-				scorelist.add(score);
-			}
-		} catch (Exception ex) {
-			System.out.println("StudentDAO : inquirylist() 에러 : " + ex);
-		} finally {
-			try { // null
-				if (rs != null)
-					rs.close();
-				if (pstmt != null)
-					pstmt.close();
-				if (conn != null)
-					conn.close();
-			} catch (Exception ex) {
-				throw new RuntimeException(ex.getMessage());
-			}
+		return results.isEmpty() ? null:results.get(0);
 		}
-		return scorelist;
-	}
 
 	/* 성적조회페이지 : 과목(이수구분, 학점)들고오기 */
-	public ssubjectDTO isuhakjumlist(String subject){
+	public ssubjectDTO isuhakjumlist(String subject)
+		{
+		List<ssubjectDTO> results
+		= jdbcTemplate.query
+			("select * from ssubject where sub_name=?",
+			new RowMapper<ssubjectDTO>()
+				{
+				@Override
+				public ssubjectDTO mapRow(ResultSet rs, int rowNum) throws SQLException
+					{
+					ssubjectDTO ss_dto = new ssubjectDTO();
+					
+					ss_dto.setSub_isu(rs.getString("sub_isu"));
+					ss_dto.setSub_hakjum(rs.getInt("sub_hakjum"));
+					ss_dto.setSub_name(rs.getString("sub_name"));
+					
+					return ss_dto;
+					}
+				},
+			subject
+			);
 		
-		ssubjectDTO dto = null;
-		
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		String sql;
-		
-		try {
-			conn = DBConn.getConnection();
-			
-			sql = "select * from ssubject where sub_name=?";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, subject);
-			
-			rs = pstmt.executeQuery();
-			
-			if(rs.next()) {
-				dto = new ssubjectDTO();
-				
-				dto.setSub_isu(rs.getString("sub_isu"));
-				dto.setSub_hakjum(rs.getInt("sub_hakjum"));
-				dto.setSub_name(rs.getString("sub_name"));
-			}
-								
-		}catch(Exception e){
-			System.out.println("StudentDAO : isuhakjumlist() 에러" + e);
-		}finally {
-			try {
-				if(rs!=null) {
-					rs.close();
-				}
-				if(pstmt!=null) {
-					pstmt.close();
-				}
-				if(conn!=null) {
-					pstmt.close();
-				}
-			}catch(Exception e){
-				throw new RuntimeException(e.getMessage());
-			}
+		return results.isEmpty() ? null:results.get(0);
 		}
-		
-		return dto;
-	}
 
 	
 	/*

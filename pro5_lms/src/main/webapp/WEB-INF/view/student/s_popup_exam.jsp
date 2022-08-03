@@ -45,7 +45,7 @@ ArrayList<QuestionDTO> queDTO_list = (ArrayList<QuestionDTO>)request.getAttribut
         	document.exam_form.method = "post"
            	window.opener.name = "s_exam.jsp";
            	document.exam_form.target = "s_exam.jsp";
-           	document.exam_form.action = "s_exam.so";
+           	document.exam_form.action = "s_exam";
    			document.exam_form.submit();
            	alert("저장이 완료되었습니다.");
            	self.close();
