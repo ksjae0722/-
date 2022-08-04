@@ -173,40 +173,10 @@ public class BoardDAO
 		}
 	
 	/*작성글 DB에 등록하기*/
-	public void insertBoard(BoardDTO board)  {
-		
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		try {
-			conn = DBConn.getConnection();		
-
-			String sql = "insert into post(po_subject, po_date, sub_name, p_oNumber, n_contents, p_name, p_id, po_filename, po_realname) values(?, ?, ?, ?, ?, ?, ?, ?, ?)";
-			//board에 값 삽입
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, board.getPo_subject());
-			pstmt.setString(2, board.getPo_date());
-			pstmt.setString(3, board.getSub_name());
-			pstmt.setString(4, board.getP_oNumber());
-			pstmt.setString(5, board.getN_contents());
-			pstmt.setString(6, board.getP_name());
-			pstmt.setString(7, board.getP_id());
-			pstmt.setString(8, board.getPo_filename());
-			pstmt.setString(9, board.getPo_realname());
-
-			pstmt.executeUpdate();
-		} catch (Exception ex) {
-			System.out.println("insertBoard() 에러 : " + ex);
-		} finally {
-			try {									
-				if (pstmt != null) 
-					pstmt.close();				
-				if (conn != null) 
-					conn.close();
-			} catch (Exception ex) {
-				throw new RuntimeException(ex.getMessage());
-			}		
-		}		
-	} 
+	public void insertBoard(BoardDTO b_dto)
+		{
+		jdbcTemplate.update("insert into post(po_subject, po_date, sub_name, p_oNumber, n_contents, p_name, p_id, po_filename, po_realname) values(?, ?, ?, ?, ?, ?, ?, ?, ?)", b_dto.getPo_subject(), b_dto.getPo_date(), b_dto.getSub_name(), b_dto.getP_oNumber(), b_dto.getN_contents(), b_dto.getP_name(), b_dto.getP_id(), b_dto.getPo_filename(), b_dto.getPo_realname());
+		} 
 
 	/*선택된 글 DB에서 상세 내용 가져오기*/
 	public BoardDTO getBoardByNum(int num)
@@ -248,40 +218,8 @@ public class BoardDAO
 		}
 	
 	/*선택된 글 내용 업데이트*/
-	public void updateBoard(BoardDTO board) {
-
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-	
-		try {
-			String sql = "update post set sub_name=?, po_subject=?, po_filename=?, n_contents=?, po_date=?, po_realname=? where po_num=?";
-			conn = DBConn.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			
-			conn.setAutoCommit(false); //사용자가 직접 commit/rollback
-
-			pstmt.setString(1, board.getSub_name());
-			pstmt.setString(2, board.getPo_subject());
-			pstmt.setString(3, board.getPo_filename());
-			pstmt.setString(4, board.getN_contents());
-			pstmt.setString(5, board.getPo_date());
-			pstmt.setString(6, board.getPo_realname());
-			pstmt.setInt(7, board.getPo_num());
-
-			pstmt.executeUpdate();			
-			conn.commit();
-
-		} catch (Exception ex) {
-			System.out.println("updateBoard() 에러 : " + ex);
-		} finally {
-			try {										
-				if (pstmt != null) 
-					pstmt.close();				
-				if (conn != null) 
-					conn.close();
-			} catch (Exception ex) {
-				throw new RuntimeException(ex.getMessage());
-			}		
+	public void updateBoard(BoardDTO b_dto)
+		{
+		jdbcTemplate.update("update post set sub_name=?, po_subject=?, po_filename=?, n_contents=?, po_date=?, po_realname=? where po_num=?", b_dto.getSub_name(), b_dto.getPo_subject(), b_dto.getPo_filename(), b_dto.getN_contents(), b_dto.getPo_date(), b_dto.getPo_realname(), b_dto.getPo_num());
 		}
-	}
 	}

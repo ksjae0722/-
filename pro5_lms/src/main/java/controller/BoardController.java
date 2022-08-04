@@ -3,6 +3,7 @@ package controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -14,10 +15,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import config.AppCtx;
-import mvc.controller.DefaultFileRenamePolicy;
-import mvc.controller.MultipartRequest;
 import mvc.model.BoardDAO;
 import mvc.model.BoardDTO;
 import mvc.model.PersonalDAO;
@@ -60,12 +60,12 @@ public class BoardController
 		}
 	
 	@RequestMapping("/p_postupload")
-	public String p_postupload(HttpServletRequest request, Model model, @RequestParam(value = "pageNum", required = false) String PageNum, @RequestParam(value = "subjects", required = false) String subjects, HttpSession session)
+	public String p_postupload(Model model, @RequestParam(value = "filename", required = false) MultipartFile filename, @RequestParam(value = "summernote") String contents, @RequestParam(value = "id") String id, @RequestParam(value = "select_subject") String select_subject, @RequestParam(value = "title") String title, @RequestParam(value = "phonenum") String phonenum, @RequestParam(value = "p_name") String p_name, @RequestParam(value = "pageNum", required = false) String PageNum, @RequestParam(value = "subjects", required = false) String subjects, HttpSession session)
 		{
 		Remember remember = (Remember) session.getAttribute("remember");
 		String p_id = remember.getId();
 		
-		setPost(model, request);
+		setPost(model, filename, contents, id, select_subject, title, phonenum, p_name);
 		
 		getSubject(model, p_id);
 		requestBoardList(model, PageNum, subjects);
@@ -86,8 +86,14 @@ public class BoardController
 		return "board/p_post";
 		}
 	
+	@RequestMapping("/download")
+	public void download(Model model, HttpSession session, HttpServletRequest request, HttpServletResponse response)
+		{
+		file_down(request, response);
+		}
+	
 	@RequestMapping("/DeleteAction")
-	public String DeleteAction(Model model, @RequestParam(value = "num") String num, @RequestParam(value = "pageNum", required = false) String PageNum, @RequestParam(value = "subjects", required = false) String subjects, HttpSession session)
+	public String DeleteAction(Model model, @RequestParam(value = "num") String num, @RequestParam(value = "pageNum", required = false) String PageNum, @RequestParam(value = "subjects") String subjects, HttpSession session)
 		{
 		Remember remember = (Remember) session.getAttribute("remember");
 		String p_id = remember.getId();
@@ -114,12 +120,12 @@ public class BoardController
 		}
 	
 	@RequestMapping("/p_postupdate")
-	public String p_postupdate(Model model, @RequestParam(value = "num") int num, @RequestParam(value = "pageNum") int pageNum, HttpSession session)
+	public String p_postupdate(Model model, @RequestParam(value = "num") int num, @RequestParam(value = "pageNum") int pageNum, @RequestParam(value = "filename", required = false) MultipartFile filename, @RequestParam(value = "summernote") String contents, @RequestParam(value = "select_subject") String select_subject, @RequestParam(value = "title") String title, HttpSession session)
 		{
 		Remember remember = (Remember) session.getAttribute("remember");
 		String p_id = remember.getId();
 		
-		requestBoardUpdate(num, pageNum);
+		requestBoardUpdate(num, pageNum, filename, contents, select_subject, title);
 		requestPost(model, num, pageNum);
 		
 		model.addAttribute("p_id", p_id);
@@ -240,42 +246,51 @@ public class BoardController
 	
 	
 	/*작성글 DB에 저장하기*/
-	public void setPost(Model model, HttpServletRequest request)
+	public void setPost(Model model, MultipartFile Filename, String contents, String id, String select_subject, String title, String phonenum, String p_name)
 		{
-		String realFolder = request.getSession().getServletContext().getRealPath("resource/upload");
-		int maxSize = 10 * 1024 * 1024;
+		String fileRealName = Filename.getOriginalFilename();
+		String fileExtension  = fileRealName.substring(fileRealName.lastIndexOf("."),fileRealName.length());
+		String uploadFolder = "resource/upload";
 		
-		try{ //파일 업로드 안할 수도 있으니까 예외처리
-			MultipartRequest multi = new MultipartRequest(request, realFolder, maxSize, "utf-8", new DefaultFileRenamePolicy());
+		UUID uuid = UUID.randomUUID();
+		System.out.println(uuid.toString());
+		String[] uuids = uuid.toString().split("-");
+		
+		String uniqueName = uuids[0];
+		
+		String savefile = uniqueName + fileExtension;
+		File saveFile = new File(uploadFolder+"\\"+uniqueName + fileExtension);
+		
+		try
+			{ //파일 업로드 안할 수도 있으니까 예외처리
+			Filename.transferTo(saveFile);
 			
-			String filename = multi.getFilesystemName("filename");
-			String realname = multi.getOriginalFileName("filename");
-			String contents = multi.getParameter("summernote");
 			contents = contents.replace("\r\n", "<br>");
-			
 			
 			java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("yyyy/MM/dd");
 			String write_day = formatter.format(new java.util.Date());
 
-			BoardDTO board = new BoardDTO();
+			BoardDTO b_dto = new BoardDTO();
 			
-			board.setP_id(multi.getParameter("id"));
-			board.setSub_name(multi.getParameter("select_subject"));
-			board.setPo_subject(multi.getParameter("title"));
-			board.setP_oNumber(multi.getParameter("phonenum"));
-			board.setP_name(multi.getParameter("p_name"));
-			board.setPo_filename(filename);
-			board.setN_contents(contents);
-			board.setPo_date(write_day);
-			board.setPo_realname(realname);
+			b_dto.setP_id(id);
+			b_dto.setSub_name(select_subject);
+			b_dto.setPo_subject(title);
+			b_dto.setP_oNumber(phonenum);
+			b_dto.setP_name(p_name);
+			b_dto.setPo_filename(savefile);
+			b_dto.setN_contents(contents);
+			b_dto.setPo_date(write_day);
+			b_dto.setPo_realname(fileRealName);
 			
-			dao.insertBoard(board);
+			b_dao.insertBoard(b_dto);
 			
-		}catch(Exception e) {
+			}
+		
+		catch(Exception e)
+			{
 			e.printStackTrace();
+			}
 		}
-
-	}
 
 	/*게시글 상세페이지 DB에서 가져오기*/
 	public void requestPost(Model model, int num, int pageNum)
@@ -353,35 +368,41 @@ public class BoardController
 		}
 	
 	/*글 수정*/
-	public void requestBoardUpdate(int num, int pageNum)
+	public void requestBoardUpdate(int num, int pageNum, MultipartFile Filename, String contents, String select_subject, String title)
 		{
-		String realFolder = request.getSession().getServletContext().getRealPath("resource/upload");
-		int maxSize = 10 * 1024 * 1024;
+		String fileRealName = Filename.getOriginalFilename();
+		String fileExtension  = fileRealName.substring(fileRealName.lastIndexOf("."),fileRealName.length());
+		String uploadFolder = "resource/upload";
+		
+		UUID uuid = UUID.randomUUID();
+		System.out.println(uuid.toString());
+		String[] uuids = uuid.toString().split("-");
+		
+		String uniqueName = uuids[0];
+		
+		String savefile = uniqueName + fileExtension;
+		File saveFile = new File(uploadFolder+"\\"+uniqueName + fileExtension);
 		
 		try
 			{ //파일 업로드 안할 수도 있으니까 예외처리
-			MultipartRequest multi = new MultipartRequest(request, realFolder, maxSize, "utf-8", new DefaultFileRenamePolicy());
+			Filename.transferTo(saveFile);
 			
-			String filename = multi.getFilesystemName("filename");
-			String realname = multi.getOriginalFileName("filename");
-			String contents = multi.getParameter("summernote");
 			contents = contents.replace("\r\n", "<br>");
 			
 			java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("yyyy/MM/dd");
 			String write_day = formatter.format(new java.util.Date());
 
-			BoardDTO board = new BoardDTO();
+			BoardDTO b_dto = new BoardDTO();
 			
-			board.setPo_num(num);
-			board.setSub_name(multi.getParameter("select_subject"));
-			board.setPo_subject(multi.getParameter("title"));
-			board.setPo_filename(filename);
-			board.setN_contents(contents);
-			board.setPo_date(write_day);
-			board.setPo_realname(realname);
+			b_dto.setPo_num(num);
+			b_dto.setSub_name(select_subject);
+			b_dto.setPo_subject(title);
+			b_dto.setPo_filename(savefile);
+			b_dto.setN_contents(contents);
+			b_dto.setPo_date(write_day);
+			b_dto.setPo_realname(fileRealName);
 			
-			b_dao.updateBoard(board);
-			
+			b_dao.updateBoard(b_dto);
 			}
 		
 		catch(Exception e)

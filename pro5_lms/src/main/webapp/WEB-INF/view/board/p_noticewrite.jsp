@@ -23,7 +23,7 @@ PersonalDTO per_dto = (PersonalDTO) request.getAttribute("dto");
         {
         if (confirm("작성을 취소하시겠습니까?"))
             {
-            window.location.href="http://localhost:8080/pro5_lms/professor/p_main.per";            
+            window.location.href="http://localhost:8080/pro5_lms/professor/p_main";            
             }
 
         else
@@ -54,7 +54,7 @@ PersonalDTO per_dto = (PersonalDTO) request.getAttribute("dto");
     <nav id = "navbar">
         <div class = "nav_container">
             <div class = "nav_logo_container">
-                <a href = "<c:url value='/professor/p_main.per'/>"><img src="../resource/images/logo.png" alt="ITUNIVERSITY"></a>
+                <a href = "<c:url value='/professor/p_main'/>"><img src="../resource/images/logo.png" alt="ITUNIVERSITY"></a>
             </div>
             <div class = "nav_user_container">
                 <a>
@@ -69,7 +69,7 @@ PersonalDTO per_dto = (PersonalDTO) request.getAttribute("dto");
                         <label for="box1">교원 정보</label>
                     </div>
                     
-                    <li><a href="<c:url value='/professor/p_info.per'/>">기본 정보 조회</a></li>
+                    <li><a href="<c:url value='/professor/p_info'/>">기본 정보 조회</a></li>
                 </ul>
             </div>
 
@@ -83,7 +83,7 @@ PersonalDTO per_dto = (PersonalDTO) request.getAttribute("dto");
                         <label for="box2">수강 신청 현황</label>
                     </div>
                     
-                    <li><a href="<c:url value='/professor/p_lecture.per'/>">수강 신청 현황</a></li>
+                    <li><a href="<c:url value='/professor/p_lecture'/>">수강 신청 현황</a></li>
                 </ul>
             </div>
 
@@ -97,7 +97,7 @@ PersonalDTO per_dto = (PersonalDTO) request.getAttribute("dto");
                         <label for="box3">시험 관리</label>
                     </div>
                    
-                    <li><a href="<c:url value='/professor/p_exam.per'/>">시험 출제</a></li>
+                    <li><a href="<c:url value='/professor/p_exam'/>">시험 출제</a></li>
                 </ul>
             </div>
 
@@ -111,7 +111,7 @@ PersonalDTO per_dto = (PersonalDTO) request.getAttribute("dto");
                         <label for="box4">성적 관리</label>
                     </div>
                     
-                    <li><a href="<c:url value='/professor/p_score.per'/>">성적 산출</a></li>
+                    <li><a href="<c:url value='/professor/p_score'/>">성적 산출</a></li>
                 </ul>
             </div>
         </div>
@@ -121,7 +121,7 @@ PersonalDTO per_dto = (PersonalDTO) request.getAttribute("dto");
    <section id="main">
        <!--배너 시작-->
         <div class ="banner">
-            <input type="button" value="로그아웃" onClick="location.href='http://localhost:8080/pro5_lms/member/logout.do'">
+            <input type="button" value="로그아웃" onClick="location.href='http://localhost:8080/pro5_lms/member/logout'">
         </div>
         <!--배너 끝-->
 <!--기본 틀 안에 내용 작성-->
@@ -134,7 +134,7 @@ PersonalDTO per_dto = (PersonalDTO) request.getAttribute("dto");
                     <div class="title_sub">수정</div>
                 </div>
                 <div class="frame_bottom">
-                    <form action="http://localhost:8080/pro5_lms/board/p_noticewrite_update.notice" class="post-form" name="form" method="post" enctype="multipart/form-data">
+                    <form action="http://localhost:8080/pro5_lms/board/p_noticewrite_update" class="post-form" name="form" method="post" enctype="multipart/form-data">
                         <div class = "selector">
                             <div>
                                 <input type="text" class="box number" name="p_department" placeholder="부서" value="<%=per_dto.getP_department()%>" readonly>
@@ -143,7 +143,7 @@ PersonalDTO per_dto = (PersonalDTO) request.getAttribute("dto");
                                 <input type="hidden" class="box number" name="p_oNumber" value="<%= per_dto.getP_oNumber() %>">
                             </div>
                             <div class="btns">
-                                <a href="http://localhost:8080/pro5_lms/board/p_noticeboardlist.notice" class="btn-list">목록</a>
+                                <a href="http://localhost:8080/pro5_lms/board/p_noticeboardlist" class="btn-list">목록</a>
                                 <a class="btn-reset" onclick="func()">취소</a>
                                 <input type="button" class="btn-submit" name="submit_btn" value="게시" onclick="asdf()">
                             </div>
