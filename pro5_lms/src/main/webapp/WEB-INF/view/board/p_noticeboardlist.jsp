@@ -24,7 +24,7 @@ int total_page = ((Integer) request.getAttribute("total_page")).intValue();
     <nav id = "navbar">
         <div class = "nav_container">
             <div class = "nav_logo_container">
-                <a href = "<c:url value='/professor/p_main.per'/>"><img src="../resource/images/logo.png" alt="ITUNIVERSITY"></a>
+                <a href = "<c:url value='/professor/p_main'/>"><img src="../resource/images/logo.png" alt="ITUNIVERSITY"></a>
             </div>
             <div class = "nav_user_container">
                 <a>
@@ -39,7 +39,7 @@ int total_page = ((Integer) request.getAttribute("total_page")).intValue();
                         <label for="box1">교원 정보</label>
                     </div>
                     
-                    <li><a href="<c:url value='/professor/p_info.per'/>">기본 정보 조회</a></li>
+                    <li><a href="<c:url value='/professor/p_info'/>">기본 정보 조회</a></li>
                 </ul>
             </div>
 
@@ -53,7 +53,7 @@ int total_page = ((Integer) request.getAttribute("total_page")).intValue();
                         <label for="box2">수강 신청 현황</label>
                     </div>
                     
-                    <li><a href="<c:url value='/professor/p_lecture.per'/>">수강 신청 현황</a></li>
+                    <li><a href="<c:url value='/professor/p_lecture'/>">수강 신청 현황</a></li>
                 </ul>
             </div>
 
@@ -67,7 +67,7 @@ int total_page = ((Integer) request.getAttribute("total_page")).intValue();
                         <label for="box3">시험 관리</label>
                     </div>
                    
-                    <li><a href="<c:url value='/professor/p_exam.per'/>">시험 출제</a></li>
+                    <li><a href="<c:url value='/professor/p_exam'/>">시험 출제</a></li>
                 </ul>
             </div>
 
@@ -81,7 +81,7 @@ int total_page = ((Integer) request.getAttribute("total_page")).intValue();
                         <label for="box4">성적 관리</label>
                     </div>
                     
-                    <li><a href="<c:url value='/professor/p_score.per'/>">성적 산출</a></li>
+                    <li><a href="<c:url value='/professor/p_score'/>">성적 산출</a></li>
                 </ul>
             </div>
         </div>
@@ -91,13 +91,13 @@ int total_page = ((Integer) request.getAttribute("total_page")).intValue();
 <section id="main">
     <!--배너 시작-->
      <div class ="banner">
-         <input type="button" value="로그아웃" onClick="location.href='http://localhost:8080/pro5_lms/member/logout.do'">
+         <input type="button" value="로그아웃" onClick="location.href='http://localhost:8080/pro5_lms/member/logout'">
      </div>
      <!--배너 끝-->
 <!--기본 틀 안에 내용 작성-->
      <div class ="container">
          <!--프레임 시작 // class명(frame)은 페이지에 맞게 수정-->
-         <form class="incontain" action = "p_noticeboardlist.notice">
+         <form class="incontain" action = "p_noticeboardlist">
              <div class="p-contain">
                  <div class="title">공지사항</div>
                  <!--수정은 기본 display-none 필요하면 사용-->
@@ -130,7 +130,7 @@ int total_page = ((Integer) request.getAttribute("total_page")).intValue();
 						<ul class = "tr">
 							<li class = "td a"><p><%= nbDTO.getN_num() %></p></li>
 	                     	<li class = "td b"><p><%= nbDTO.getP_name() %></p></li>
-	                     	<li class = "td c"><a href = "http://localhost:8080/pro5_lms/board/p_notice.notice?n_num=<%=nbDTO.getN_num()%>&pageNum=<%=pageNum%>"><%=nbDTO.getN_subject()%></a></li>
+	                     	<li class = "td c"><a href = "http://localhost:8080/pro5_lms/board/p_notice?n_num=<%=nbDTO.getN_num()%>&pageNum=<%=pageNum%>"><%=nbDTO.getN_subject()%></a></li>
 	                     	<li class = "td d"><p><%= nbDTO.getP_department() %></p></li>
 	                     	<li class = "td e"><p><%= nbDTO.getN_date() %></p></li>
 						</ul>
@@ -143,7 +143,7 @@ int total_page = ((Integer) request.getAttribute("total_page")).intValue();
                  	<c:set var="pageNum" value="<%=pageNum%>" />
                  	<c:forEach var="i" begin="1" end="<%=total_page%>">
                  		<div class="number">
-	                 		<a href="<c:url value="/board/p_noticeboardlist.notice?pageNum=${i}" /> ">
+	                 		<a href="<c:url value="/board/p_noticeboardlist?pageNum=${i}" /> ">
 		                 		<c:choose>
 		                 			<c:when test="${pageNum==i}">
 		                 				<font><b>${i}</b></font>
@@ -158,7 +158,7 @@ int total_page = ((Integer) request.getAttribute("total_page")).intValue();
                      <div class="right"><a href="#"><i class="fa-solid fa-angle-right"></i></a></div>
                  </div>
                  <div class="bottom">
-                     <a href="p_noticewrite.notice">글쓰기</a>
+                     <a href="p_noticewrite">글쓰기</a>
                  </div>
              </div>
          </form>

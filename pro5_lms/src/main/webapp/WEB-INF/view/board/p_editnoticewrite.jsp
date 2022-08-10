@@ -24,7 +24,7 @@ notice_boardDTO nbDTO = (notice_boardDTO) request.getAttribute("nbDTO");
         {
         if (confirm("수정을 취소하시겠습니까?"))
             {
-            window.location.href="http://localhost:8080/pro5_lms/professor/p_main.per";            
+            window.location.href="http://localhost:8080/pro5_lms/professor/p_main";            
             }
 
         else
@@ -55,7 +55,7 @@ notice_boardDTO nbDTO = (notice_boardDTO) request.getAttribute("nbDTO");
     <nav id = "navbar">
         <div class = "nav_container">
             <div class = "nav_logo_container">
-                <a href = "<c:url value='/professor/p_main.per'/>"><img src="../resource/images/logo.png" alt="ITUNIVERSITY"></a>
+                <a href = "<c:url value='/professor/p_main'/>"><img src="../resource/images/logo.png" alt="ITUNIVERSITY"></a>
             </div>
             <div class = "nav_user_container">
                 <a>
@@ -70,7 +70,7 @@ notice_boardDTO nbDTO = (notice_boardDTO) request.getAttribute("nbDTO");
                         <label for="box1">교원 정보</label>
                     </div>
                     
-                    <li><a href="<c:url value='/professor/p_info.per'/>">기본 정보 조회</a></li>
+                    <li><a href="<c:url value='/professor/p_info'/>">기본 정보 조회</a></li>
                 </ul>
             </div>
 
@@ -84,7 +84,7 @@ notice_boardDTO nbDTO = (notice_boardDTO) request.getAttribute("nbDTO");
                         <label for="box2">수강 신청 현황</label>
                     </div>
                     
-                    <li><a href="<c:url value='/professor/p_lecture.per'/>">수강 신청 현황</a></li>
+                    <li><a href="<c:url value='/professor/p_lecture'/>">수강 신청 현황</a></li>
                 </ul>
             </div>
 
@@ -98,7 +98,7 @@ notice_boardDTO nbDTO = (notice_boardDTO) request.getAttribute("nbDTO");
                         <label for="box3">시험 관리</label>
                     </div>
                    
-                    <li><a href="<c:url value='/professor/p_exam.per'/>">시험 출제</a></li>
+                    <li><a href="<c:url value='/professor/p_exam'/>">시험 출제</a></li>
                 </ul>
             </div>
 
@@ -122,7 +122,7 @@ notice_boardDTO nbDTO = (notice_boardDTO) request.getAttribute("nbDTO");
    <section id="main">
        <!--배너 시작-->
         <div class ="banner">
-            <input type="button" value="로그아웃" onClick="location.href='http://localhost:8080/pro5_lms/member/logout.do'">
+            <input type="button" value="로그아웃" onClick="location.href='http://localhost:8080/pro5_lms/member/logout'">
         </div>
         <!--배너 끝-->
 <!--기본 틀 안에 내용 작성-->
@@ -135,7 +135,7 @@ notice_boardDTO nbDTO = (notice_boardDTO) request.getAttribute("nbDTO");
                     <div class="title_sub">수정</div>
                 </div>
 				<div class="frame_bottom">
-					<form action="p_editnoticewrite_update.notice?n_num=<%= n_num %>&pageNum=<%= pageNum %>" class="post-form" name="form" method = "post" enctype="multipart/form-data">
+					<form action="p_editnoticewrite_update?n_num=<%= n_num %>&pageNum=<%= pageNum %>" class="post-form" name="form" method = "post" enctype="multipart/form-data">
 						<div class = "selector">
 							<div>
 								<input type="text" class="box number" name="p_department" placeholder="부서" value="<%=nbDTO.getP_department()%>" readonly>

@@ -73,9 +73,6 @@ public class MemberController
 		
 		model.addAttribute("num", "1");
 		
-		//num = 1 파라미터로 던져주고 싶은데 알아보슈
-		//해결했다 병신아 model 등록 -> request.setAttribute
-		
 		return "member/login";
 		}
 	

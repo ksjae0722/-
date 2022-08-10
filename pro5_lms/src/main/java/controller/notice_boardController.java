@@ -3,6 +3,7 @@ package controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -14,10 +15,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import config.AppCtx;
-import mvc.controller.DefaultFileRenamePolicy;
-import mvc.controller.MultipartRequest;
 import mvc.model.BoardDAO;
 import mvc.model.PersonalDAO;
 import mvc.model.PersonalDTO;
@@ -55,9 +55,9 @@ public class notice_boardController
 		}
 	
 	@RequestMapping("/p_noticewrite_update")
-	public String p_noticewrite_update(Model model, @RequestParam(value = "pageNum", required = false) String pageNum, @RequestParam(value = "items", required = false) String items, @RequestParam(value = "text", required = false) String text)
+	public String p_noticewrite_update(Model model, HttpSession session, @RequestParam(value = "p_department") String p_department, @RequestParam(value = "p_id") String p_id, @RequestParam(value = "p_name") String p_name, @RequestParam(value = "p_oNumber") String p_oNumber, @RequestParam(value = "title") String title, @RequestParam(value = "filename", required = false) MultipartFile filename, @RequestParam(value = "summernote") String summernote, @RequestParam(value = "pageNum", required = false) String pageNum, @RequestParam(value = "items", required = false) String items, @RequestParam(value = "text", required = false) String text)
 		{
-		newNotice(request);
+		newNotice(model, p_department, p_id, p_name, p_oNumber, title, filename, summernote);
 		requestNoticeBoardList(model, pageNum, items, text);
 		
 		return "board/p_noticeboardlist";
@@ -80,9 +80,9 @@ public class notice_boardController
 		}
 	
 	@RequestMapping("/p_editnoticewrite_update")
-	public String p_editnoticewrite_update(Model model, @RequestParam(value = "n_num", required = false) int num, @RequestParam(value = "pageNum", required = false) int pageNum)
+	public String p_editnoticewrite_update(Model model, @RequestParam(value = "n_num", required = false) int num, @RequestParam(value = "pageNum", required = false) int pageNum, @RequestParam(value = "title") String title, @RequestParam(value = "filename", required = false) MultipartFile filename, @RequestParam(value = "summernote") String summernote)
 		{
-		int[] num_arr = update_edit_notice(model, num, pageNum);
+		int[] num_arr = update_edit_notice(model, num, pageNum, title, filename, summernote);
 		read_notice(model, num_arr[0], num_arr[1]);
 		
 		model.addAttribute("n_num", num_arr[0]);
@@ -163,35 +163,41 @@ public class notice_boardController
 		model.addAttribute("dto", p_dto);
 		}
 	
-	// 새 글 작성
-	public void newNotice(HttpServletRequest request)
+	// 새 글 작성newNotice(model, p_department, p_id, p_name, p_oNumber, title, filename, summernote);
+	public void newNotice(Model model, String p_department, String p_id, String p_name, String p_oNumber, String title, MultipartFile Filename, String contents)
 		{
-		String realFolder = request.getSession().getServletContext().getRealPath("resource/upload");
-		int maxSize = 10 * 1024 * 1024;
+		String fileRealName = Filename.getOriginalFilename();
+		String fileExtension  = fileRealName.substring(fileRealName.lastIndexOf("."),fileRealName.length());
+		String uploadFolder = "resource/upload";
+		
+		UUID uuid = UUID.randomUUID();
+		System.out.println(uuid.toString());
+		String[] uuids = uuid.toString().split("-");
+		
+		String uniqueName = uuids[0];
+		
+		String savefile = uniqueName + fileExtension;
+		File saveFile = new File(uploadFolder+"\\"+uniqueName + fileExtension);
 		
 		try
-			{	
-			MultipartRequest multi = new MultipartRequest(request, realFolder, maxSize, "utf-8", new DefaultFileRenamePolicy());
+			{
+			Filename.transferTo(saveFile);
+			
+			contents = contents.replace("\r\n", "<br>");
 			
 			java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("yyyy/MM/dd");
 			String regist_day = formatter.format(new java.util.Date());
 			
-			String contents = multi.getParameter("summernote");
-			contents = contents.replace("\r\n", "<br>");
-			
-			String filename = multi.getFilesystemName("filename");
-			String realname = multi.getOriginalFileName("filename");
-			
 			notice_boardDTO nbDTO = new notice_boardDTO();
-			nbDTO.setN_subject(multi.getParameter("title"));
+			nbDTO.setN_subject(title);
 			nbDTO.setN_date(regist_day);
-			nbDTO.setP_department(multi.getParameter("p_department"));
-			nbDTO.setP_oNumber(multi.getParameter("p_oNumber"));
+			nbDTO.setP_department(p_department);
+			nbDTO.setP_oNumber(p_oNumber);
 			nbDTO.setN_contents(contents);
-			nbDTO.setP_name(multi.getParameter("p_name"));
-			nbDTO.setP_id(multi.getParameter("p_id"));
-			nbDTO.setN_filename(filename);
-			nbDTO.setN_realname(realname);
+			nbDTO.setP_name(p_name);
+			nbDTO.setP_id(p_id);
+			nbDTO.setN_filename(savefile);
+			nbDTO.setN_realname(fileRealName);
 			
 			nb_dao.insertBoard(nbDTO);
 			}
@@ -279,28 +285,33 @@ public class notice_boardController
 		}
 	
 	//수정 버튼 눌렀을 때
-	public int[] update_edit_notice(Model model, int num, int pageNum)
+	public int[] update_edit_notice(Model model, int num, int pageNum, String title, MultipartFile Filename, String contents)
 		{
-		String realFolder = request.getSession().getServletContext().getRealPath("resource/upload");
-		int maxSize = 10 * 1024 * 1024;
-		
 		int[] num_arr = {num, pageNum};
+		
+		String fileRealName = Filename.getOriginalFilename();
+		String fileExtension  = fileRealName.substring(fileRealName.lastIndexOf("."),fileRealName.length());
+		String uploadFolder = "resource/upload";
+		
+		UUID uuid = UUID.randomUUID();
+		System.out.println(uuid.toString());
+		String[] uuids = uuid.toString().split("-");
+		
+		String uniqueName = uuids[0];
+		
+		String savefile = uniqueName + fileExtension;
+		File saveFile = new File(uploadFolder+"\\"+uniqueName + fileExtension);
 		
 		try
 			{
-			MultipartRequest multi = new MultipartRequest(request, realFolder, maxSize, "utf-8", new DefaultFileRenamePolicy());
+			Filename.transferTo(saveFile);
 			
-			String filename = multi.getFilesystemName("filename");
-			String realname = multi.getOriginalFileName("filename");
-			
-			String title = multi.getParameter("title");
-			String contents = multi.getParameter("summernote");
 			contents = contents.replace("\r\n", "<br>");
 			
 			java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("yyyy/MM/dd");
-			String write_day = formatter.format(new java.util.Date());
+			String regist_day = formatter.format(new java.util.Date());
 			
-			nb_dao.update_editnotice(num, title, contents, write_day);
+			nb_dao.update_editnotice(num, title, contents, regist_day, savefile, fileRealName);
 			}
 		
 		catch(Exception e)

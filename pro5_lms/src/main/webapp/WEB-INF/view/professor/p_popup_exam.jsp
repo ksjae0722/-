@@ -45,7 +45,7 @@ ArrayList<QuestionDTO> queDTO_list = (ArrayList<QuestionDTO>)request.getAttribut
         	document.exam.method = "post"
         	window.opener.name = "p_exam.jsp"; // 부모창의 이름 설정
         	document.exam.target = "p_exam.jsp"; // 타켓을 부모창으로 설정
-        	document.exam.action = "p_exam.per";
+        	document.exam.action = "p_exam";
 			document.exam.submit();
         	alert("저장이 완료되었습니다.");
         	self.close();
@@ -60,7 +60,7 @@ ArrayList<QuestionDTO> queDTO_list = (ArrayList<QuestionDTO>)request.getAttribut
 <body>
     <div class = "container">
         <p><%= sub_name %> 온라인 시험</p>
-        <form name = "exam" action = "p_exam.per">
+        <form name = "exam" action = "p_exam">
 	        <%
 	        for (int i=0; i < queDTO_list.size(); i++)
 	        	{

@@ -145,48 +145,7 @@ public class notice_boardDAO
 	/*새 글 작성 시 데이터 집어넣기*/
 	public void insertBoard(notice_boardDTO nbDTO)
 		{
-		Connection conn = null; 
-		PreparedStatement pstmt = null;
-		
-		try
-			{
-			conn = DBConn.getConnection();
-			
-			String sql = "insert into notice(n_subject, n_date, p_department, p_oNumber, n_filename, n_realname, n_contents, p_name, p_id) values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, nbDTO.getN_subject());
-			pstmt.setString(2, nbDTO.getN_date());
-			pstmt.setString(3, nbDTO.getP_department());
-			pstmt.setString(4, nbDTO.getP_oNumber());
-			pstmt.setString(5, nbDTO.getN_filename());
-			pstmt.setString(6, nbDTO.getN_realname());
-			pstmt.setString(7, nbDTO.getN_contents());
-			pstmt.setString(8, nbDTO.getP_name());
-			pstmt.setString(9, nbDTO.getP_id());
-			
-			pstmt.executeUpdate();
-			}
-		
-		catch(Exception e)
-			{
-			System.out.println("insertBoard() 에러 : " + e);
-			}
-		
-		finally
-			{
-			try
-				{
-				if (pstmt != null) 
-					pstmt.close();				
-				if (conn != null) 
-					conn.close();
-				}
-			
-			catch(Exception e)
-				{
-				throw new RuntimeException(e.getMessage());
-				}
-			}
+		jdbcTemplate.update("insert into notice(n_subject, n_date, p_department, p_oNumber, n_filename, n_realname, n_contents, p_name, p_id) values (?, ?, ?, ?, ?, ?, ?, ?, ?)", nbDTO.getN_subject(), nbDTO.getN_date(), nbDTO.getP_department(), nbDTO.getP_oNumber(), nbDTO.getN_filename(), nbDTO.getN_realname(), nbDTO.getN_contents(), nbDTO.getP_name(), nbDTO.getP_id());
 		}
 	
 	/*제목 클릭 시 해당글 가져오기*/
@@ -245,9 +204,9 @@ public class notice_boardDAO
 		return results.isEmpty() ? null:results.get(0);
 		}
 	
-	public void update_editnotice(int n_num, String title, String contents, String write_day)
+	public void update_editnotice(int n_num, String title, String contents, String write_day, String savefile, String fileRealName)
 		{
-		jdbcTemplate.update("update notice set n_subject=?, n_date=?, n_contents=? where n_num=?", title, write_day, contents, n_num);
+		jdbcTemplate.update("update notice set n_subject=?, n_date=?, n_contents=?, n_filename=?, n_realname=? where n_num=?", title, write_day, contents, savefile, fileRealName, n_num);
 		}
 	
 	public void deleteDAO(int n_num)

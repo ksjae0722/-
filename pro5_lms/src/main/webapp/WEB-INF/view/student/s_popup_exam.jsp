@@ -61,7 +61,7 @@ ArrayList<QuestionDTO> queDTO_list = (ArrayList<QuestionDTO>)request.getAttribut
 <body>
     <div class = "container">
         <p><%= sub_name %> 온라인 시험</p>
-        <form name = "exam_form" action = "p_exam.per">
+        <form name = "exam_form" action = "s_exam">
 	        <%
 	        for (int i=0; i < queDTO_list.size(); i++)
 	        	{

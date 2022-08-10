@@ -160,11 +160,6 @@ public class BoardController
 		}
 	
 	
-	
-	
-	
-	
-	
 	/*게시판 목록(게시글 Arraylist) DB에서 가져오기*/
 	public void requestBoardList(Model model, String PageNum, String subjects)
 		{
